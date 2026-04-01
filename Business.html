@@ -1,156 +1,477 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Business Website</title>
-  <meta name="description" content="Professional business services tailored for your success.">
-  <meta name="keywords" content="business, consulting, development, support">
-  <meta name="author" content="My Business">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      transition: background 0.3s, color 0.3s;
-    }
-    header {
-      background-color: #2c3e50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      background-color: #34495e;
-    }
-    nav a {
-      color: white;
-      padding: 14px 20px;
-      text-decoration: none;
-      display: block;
-    }
-    nav a:hover {
-      background-color: #2c3e50;
-    }
-    section {
-      padding: 40px;
-      text-align: center;
-    }
-    footer {
-      background-color: #2c3e50;
-      color: white;
-      text-align: center;
-      padding: 10px;
-    }
-    .highlight {
-      background-color: yellow;
-      transition: background-color 0.5s ease;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    input, textarea {
-      width: 80%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .dark-mode {
-      background: #121212;
-      color: #eee;
-    }
-    @media (max-width: 600px) {
-      nav a {
-        flex: 1 0 100%;
-        text-align: center;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Governance Dynamics: Srinagar Case Study</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        body {
+            background-color: #F9F7F3;
+            color: #2A2A2A;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-link.active {
+            border-bottom: 2px solid #FF6B6B;
+            color: #FF6B6B;
+            font-weight: 600;
+        }
+        .concept-btn.active {
+            background-color: #4ECDC4;
+            color: #1A1A1A;
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+        .concept-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .timeline-step {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid #FFE66D;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-step::before {
+            content: '●';
+            color: #FF6B6B;
+            font-size: 1.5rem;
+            position: absolute;
+            left: -0.55rem;
+            top: -0.25rem;
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <h1>My Business</h1>
-    <p>Professional Services for You</p>
-    <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-  </header>  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-  </nav>  <section id="home">
-    <h2>Welcome to Our Business</h2>
-    <p>We provide top-notch services to meet your needs.</p>
-    <button onclick="highlightSection('home')">Highlight Section</button>
-  </section>  <section id="about">
-    <h2>About Us</h2>
-    <p>We are a team of professionals dedicated to excellence.</p>
-    <button onclick="toggleAboutDetails()">Toggle Details</button>
-    <p id="aboutDetails" style="display: none;">Our experience spans various industries, delivering consistent success.</p>
-  </section>  <section id="services">
-    <h2>Our Services</h2>
-    <ul style="list-style: none; padding: 0;">
-      <li>Consulting</li>
-      <li>Development</li>
-      <li>Support</li>
-    </ul>
-    <button onclick="showAlert()">Learn More</button>
-  </section>  <section id="contact">
-    <h2>Contact Us</h2>
-    <form onsubmit="submitForm(event)">
-      <input type="text" id="name" placeholder="Your Name" required><br>
-      <input type="email" id="email" placeholder="Your Email" required><br>
-      <textarea id="message" placeholder="Your Message" rows="4" required></textarea><br>
-      <button type="submit">Send</button>
-    </form>
-  </section>  <footer>
-    <p>&copy; 2025 My Business. All rights reserved.</p>
-  </footer>  <script>
-    // Smooth scroll
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        target.scrollIntoView({ behavior: 'smooth' });
-      });
-    });
+<body class="antialiased">
 
-    // Highlight section
-    function highlightSection(id) {
-      const section = document.getElementById(id);
-      section.classList.add('highlight');
-      setTimeout(() => section.classList.remove('highlight'), 1000);
-    }
+<!-- Chosen Palette: Warm Neutral Background with Vibrant Accents (#F9F7F3, #2A2A2A, #FF6B6B, #4ECDC4, #FFE66D, #1A535C) -->
+<!-- Application Structure Plan: The SPA is structured as a linear narrative dashboard. It begins with the context (The Incident), breaks down the underlying power structures (Authority & Roles), explores the psychological escalation (Dynamics & Conflict), and concludes with systemic outcomes (Efficiency & Implications). This guides the user from a concrete event into abstract sociological analysis. Interactive tabs and charts encourage active exploration without overwhelming the user with a wall of text. -->
+<!-- Visualization & Content Choices: 
+    1. The Incident -> Goal: Organize/Timeline -> HTML/CSS Timeline -> Justification: Shows the sequential flow of events clearly. (NO SVG/Mermaid).
+    2. Structural vs Perceived Authority -> Goal: Compare -> Radar Chart -> Justification: Ideal for showing multidimensional variables between two distinct entities. Chart.js (NO SVG).
+    3. Conflation of Roles -> Goal: Inform/Composition -> Doughnut Chart -> Justification: Illustrates how informal leaders divide their perceived jurisdiction. Chart.js (NO SVG).
+    4. Escalation Dynamics -> Goal: Change -> Line Chart -> Justification: Shows the inverse relationship between emotional volatility and rational discourse over time. Chart.js (NO SVG).
+    5. Efficiency Paradox -> Goal: Compare -> Grouped Bar Chart -> Justification: Directly compares the outcomes of direct vs indirect citizen action across key metrics. Chart.js (NO SVG).
+-->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
-    // Toggle about details
-    function toggleAboutDetails() {
-      const details = document.getElementById('aboutDetails');
-      details.style.display = details.style.display === 'none' ? 'block' : 'none';
-    }
+    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 px-4 py-3 sm:px-6 lg:px-8 flex justify-center space-x-4 sm:space-x-8 overflow-x-auto whitespace-nowrap">
+        <button onclick="scrollToSection('context')" class="nav-link active text-gray-600 hover:text-gray-900 px-2 py-1 transition">The Incident</button>
+        <button onclick="scrollToSection('authority')" class="nav-link text-gray-600 hover:text-gray-900 px-2 py-1 transition">Authority Structure</button>
+        <button onclick="scrollToSection('psychology')" class="nav-link text-gray-600 hover:text-gray-900 px-2 py-1 transition">Escalation & Psychology</button>
+        <button onclick="scrollToSection('outcomes')" class="nav-link text-gray-600 hover:text-gray-900 px-2 py-1 transition">Governance Outcomes</button>
+    </nav>
 
-    // Alert message
-    function showAlert() {
-      alert('More services coming soon! Stay tuned.');
-    }
+    <header class="bg-[#1A535C] text-white py-16 px-4 sm:px-6 lg:px-8 text-center shadow-lg">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">The Gatekeepers of the Neighborhood</h1>
+            <p class="text-xl sm:text-2xl font-light text-gray-200">Analyzing the Power Dynamics between Informal Governance and Formal Municipal Systems in Urban Srinagar</p>
+        </div>
+    </header>
 
-    // Contact form submission
-    function submitForm(e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const message = document.getElementById('message').value;
-      alert(`Thank you, ${name}! We received your message.`);
-    }
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
 
-    // Dark mode toggle
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-    }
-  </script></body>
+        <section id="context" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4">1. The Case Study: Bypassing the "Procedure"</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    To understand the complex web of urban governance in Srinagar, we examine a specific, real-world incident. This section outlines the sequence of events that occurred when a resident decided to sidestep the informal neighborhood leadership to address a basic civic issue. The timeline below illustrates how a simple administrative request rapidly morphed into a complex social conflict.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 sm:p-10 border-t-4 border-[#FF6B6B]">
+                <div class="max-w-3xl mx-auto">
+                    <div class="timeline-step">
+                        <h3 class="text-xl font-semibold text-[#1A535C]">Direct Action</h3>
+                        <p class="text-gray-600 mt-1">A resident notices uncollected garbage. Instead of contacting the Mohalla President, he messages the municipal supervisor directly via WhatsApp. The issue is resolved quickly.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <h3 class="text-xl font-semibold text-[#1A535C]">Narrative Distortion</h3>
+                        <p class="text-gray-600 mt-1">The local sweeper, facing accountability, tells neighbors the resident filed a "personal complaint" against him, reframing an administrative act into a personal attack.</p>
+                    </div>
+                    <div class="timeline-step">
+                        <h3 class="text-xl font-semibold text-[#1A535C]">The Confrontation</h3>
+                        <p class="text-gray-600 mt-1">Weeks later, the Mohalla President confronts the resident publicly, demanding to know why the resident didn't follow "local procedure."</p>
+                    </div>
+                    <div class="timeline-step">
+                        <h3 class="text-xl font-semibold text-[#1A535C]">Challenging Legitimacy</h3>
+                        <p class="text-gray-600 mt-1">The resident stands his ground, asking what legal authority the President possesses. The President has no legal answer, relying solely on demands for "procedure."</p>
+                    </div>
+                    <div class="timeline-step border-transparent">
+                        <h3 class="text-xl font-semibold text-[#1A535C]">Escalation & Stand-down</h3>
+                        <p class="text-gray-600 mt-1">The President's group attempts to escalate to physical confrontation (loyalty signaling). The resident maintains eye contact and a self-defense posture. The group backs down; no formal legal action follows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="authority" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4">2. Deconstructing Authority & Intermediary Roles</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Why do informal leaders expect to be approached first? This section visualizes the stark difference between actual legal power and perceived social power. We also examine how informal bodies, originally designed for social welfare (like funeral logistics), conflate these duties with administrative oversight, creating a system of dependency and gatekeeping.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                    <h3 class="text-2xl font-bold text-center mb-2">Structural vs. Perceived Power</h3>
+                    <p class="text-sm text-center text-gray-500 mb-6">Comparing the capabilities of formal institutions versus informal leaders.</p>
+                    <div class="chart-container">
+                        <canvas id="authorityRadarChart"></canvas>
+                    </div>
+                    <div class="mt-6 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
+                        <span class="font-bold text-[#1A535C]">Analysis:</span> Informal leaders lack legal mandate but compensate with massive social influence and dispute mediation capabilities. This creates a powerful, yet fragile, perceived authority.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                    <h3 class="text-2xl font-bold text-center mb-2">The Conflation of Roles</h3>
+                    <p class="text-sm text-center text-gray-500 mb-6">How Mohalla Committees view their domain of jurisdiction.</p>
+                    <div class="chart-container flex justify-center items-center">
+                        <canvas id="roleDoughnutChart"></canvas>
+                    </div>
+                    <div class="mt-6 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
+                        <span class="font-bold text-[#1A535C]">Analysis:</span> Communities heavily rely on these groups for shared resources. However, leaders often expand this mandate, assuming a gatekeeping role over state resources (like municipal sweepers) where they have no formal jurisdiction.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="psychology" class="scroll-mt-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4">3. The Psychology of Conflict & Escalation</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    When the illusion of authority is pierced by logic, the response is rarely rational. This section explores the emotional triggers, group dynamics, and narrative control tactics deployed when informal power is challenged publicly. By interacting with the concepts below, you can uncover the psychological mechanisms driving the conflict.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 sm:p-8 mb-10">
+                <h3 class="text-xl font-bold mb-6 text-center">Interactive Social Dynamics Explorer</h3>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <button onclick="updateConcept('procedure')" id="btn-procedure" class="concept-btn active px-4 py-2 rounded-full border border-[#4ECDC4] text-sm font-medium">The "Procedure" Trap</button>
+                    <button onclick="updateConcept('loyalty')" id="btn-loyalty" class="concept-btn px-4 py-2 rounded-full border border-[#4ECDC4] text-sm font-medium">Loyalty Signaling</button>
+                    <button onclick="updateConcept('narrative')" id="btn-narrative" class="concept-btn px-4 py-2 rounded-full border border-[#4ECDC4] text-sm font-medium">Narrative Distortion</button>
+                    <button onclick="updateConcept('legal')" id="btn-legal" class="concept-btn px-4 py-2 rounded-full border border-[#4ECDC4] text-sm font-medium">The Legal Void</button>
+                </div>
+                
+                <div id="concept-display" class="bg-[#F9F7F3] p-6 rounded-lg border-l-4 border-[#FF6B6B] min-h-[150px] flex items-center">
+                    <p class="text-gray-800 text-lg leading-relaxed">
+                        <strong class="text-[#1A535C]">The "Procedure" Trap:</strong> Informal leaders repeatedly invoke "local procedure" as a mechanism of control. Because no actual legal procedure exists, this term functions as a psychological demand for submission and respect. Bypassing the procedure is treated as an ego injury, not an administrative choice.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+                <h3 class="text-2xl font-bold text-center mb-2">Rationality vs. Emotional Volatility</h3>
+                <p class="text-sm text-center text-gray-500 mb-6">Tracking the shifting dynamics during a public challenge to informal authority.</p>
+                <div class="chart-container">
+                    <canvas id="escalationLineChart"></canvas>
+                </div>
+                <p class="mt-6 text-sm text-center text-gray-600">
+                    As rational questioning increases (asking for legal proof), informal actors respond with high emotional volatility to regain dominance, eventually de-escalating when met with unyielding firmness.
+                </p>
+            </div>
+        </section>
+
+        <section id="outcomes" class="scroll-mt-20 pb-12">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-[#1A535C] mb-4">4. Efficiency, Citizen Behavior & Outcomes</h2>
+                <p class="text-lg text-gray-700 leading-relaxed">
+                    Why do citizens continue to rely on intermediaries if direct access is possible? Finally, we evaluate the systemic outcomes of this case. It highlights a critical governance paradox: direct engagement yields rapid civic results but generates intense localized social friction.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-4xl font-extrabold text-[#4ECDC4] mb-2">&#9888;</div>
+                        <h4 class="font-bold text-lg text-gray-900 mb-2">Citizen Barriers</h4>
+                        <p class="text-sm text-gray-600">Citizens often rely on intermediaries due to informational barriers, a cultural expectation of showing "respect" to elders, and a historical perception of state apathy. Direct digital access dismantles these barriers.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-4xl font-extrabold text-[#FFE66D] mb-2">&#10003;</div>
+                        <h4 class="font-bold text-lg text-gray-900 mb-2">Governance Implications</h4>
+                        <p class="text-sm text-gray-600">While neighborhood committees are vital for social cohesion, they are redundant and potentially obstructive for basic municipal administration. Formal systems must remain highly accessible to prevent intermediary dependency.</p>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-8 bg-white rounded-xl shadow-md p-6 sm:p-8">
+                    <h3 class="text-2xl font-bold text-center mb-2">The Efficiency Paradox</h3>
+                    <p class="text-sm text-center text-gray-500 mb-6">Comparing Direct Action vs. Utilizing the Intermediary.</p>
+                    <div class="chart-container">
+                        <canvas id="efficiencyBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#2A2A2A] text-gray-400 py-8 text-center text-sm">
+        <p>Analysis based on urban governance dynamics in Srinagar, Kashmir.</p>
+    </footer>
+
+    <script>
+        const concepts = {
+            'procedure': '<strong class="text-[#1A535C] text-xl block mb-2">The "Procedure" Trap</strong> Informal leaders repeatedly invoke "local procedure" as a mechanism of control. Because no actual legal procedure exists, this term functions as a psychological demand for submission and respect. Bypassing the procedure is treated as an ego injury, not an administrative choice.',
+            'loyalty': '<strong class="text-[#1A535C] text-xl block mb-2">Loyalty Signaling & Group Dynamics</strong> Why do non-leader members escalate more aggressively? In public settings, subordinates engage in "loyalty signaling." By moving toward physical confrontation, they prove their allegiance to the leader, amplifying their own standing within the informal group.',
+            'narrative': '<strong class="text-[#1A535C] text-xl block mb-2">Narrative Control & Distortion</strong> Reframing a general service complaint (uncollected garbage) into a personal accusation preserves the intermediary system. It shifts the blame from systemic failure to personal animosity, allowing the informal leader to intervene as a moral arbiter rather than a failed administrator.',
+            'legal': '<strong class="text-[#1A535C] text-xl block mb-2">The Legal Void & Conflict Resolution</strong> When challenged, informal leaders rarely translate conflicts into formal legal action (like filing an FIR). Doing so would require interacting with the formal state, which would immediately expose their complete lack of statutory standing and legal authority.'
+        };
+
+        function updateConcept(conceptKey) {
+            document.querySelectorAll('.concept-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-[#4ECDC4]', 'text-[#1A1A1A]');
+            });
+            const activeBtn = document.getElementById('btn-' + conceptKey);
+            activeBtn.classList.add('active', 'bg-[#4ECDC4]', 'text-[#1A1A1A]');
+            
+            const displayContent = document.getElementById('concept-display');
+            displayContent.style.opacity = 0;
+            setTimeout(() => {
+                displayContent.innerHTML = `<p class="text-gray-800 text-lg leading-relaxed">${concepts[conceptKey]}</p>`;
+                displayContent.style.opacity = 1;
+            }, 200);
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if(link.getAttribute('onclick').includes(id)) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('section').forEach(section => {
+            navObserver.observe(section);
+        });
+
+        function wrapChartLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    if ((currentLine + word).length > 16) {
+                        if (currentLine.trim().length > 0) {
+                            lines.push(currentLine.trim());
+                        }
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                }
+                if (currentLine.trim().length > 0) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            });
+        }
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        const globalChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                tooltip: tooltipConfig,
+                legend: {
+                    labels: {
+                        font: { family: "'Inter', sans-serif" },
+                        color: '#2A2A2A'
+                    }
+                }
+            }
+        };
+
+        const ctxRadar = document.getElementById('authorityRadarChart').getContext('2d');
+        const labelsRadar = wrapChartLabels(['Statutory Legal Mandate', 'Local Dispute Mediation', 'Social Capital & Influence', 'Resource Distribution Control', 'Municipal Task Enforcement']);
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: labelsRadar,
+                datasets: [
+                    {
+                        label: 'Formal Municipality',
+                        data: [100, 30, 40, 90, 100],
+                        backgroundColor: 'rgba(78, 205, 196, 0.2)',
+                        borderColor: '#4ECDC4',
+                        pointBackgroundColor: '#4ECDC4',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Informal Leader (President)',
+                        data: [0, 90, 95, 30, 10],
+                        backgroundColor: 'rgba(255, 107, 107, 0.2)',
+                        borderColor: '#FF6B6B',
+                        pointBackgroundColor: '#FF6B6B',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                ...globalChartOptions,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.1)' },
+                        grid: { color: 'rgba(0,0,0,0.1)' },
+                        pointLabels: {
+                            font: { family: "'Inter', sans-serif", size: 11 },
+                            color: '#2A2A2A'
+                        },
+                        ticks: { display: false, min: 0, max: 100 }
+                    }
+                }
+            }
+        });
+
+        const ctxDoughnut = document.getElementById('roleDoughnutChart').getContext('2d');
+        const labelsDoughnut = wrapChartLabels(['Social Logistics (Funerals, Events)', 'Local Dispute Resolution', 'Proxy Municipal Management']);
+        new Chart(ctxDoughnut, {
+            type: 'doughnut',
+            data: {
+                labels: labelsDoughnut,
+                datasets: [{
+                    data: [50, 30, 20],
+                    backgroundColor: ['#4ECDC4', '#FFE66D', '#FF6B6B'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                ...globalChartOptions,
+                cutout: '60%',
+                plugins: {
+                    ...globalChartOptions.plugins,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        const ctxLine = document.getElementById('escalationLineChart').getContext('2d');
+        const labelsLine = wrapChartLabels(['Initial Incident', 'Gossip & Narrative Shift', 'President Confrontation', 'Group Loyalty Signaling', 'Resident Firmness (De-escalation)']);
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: labelsLine,
+                datasets: [
+                    {
+                        label: 'Emotional Volatility / Ego Threat',
+                        data: [10, 40, 65, 95, 30],
+                        borderColor: '#FF6B6B',
+                        backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#FF6B6B',
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Rational Discourse',
+                        data: [90, 50, 20, 10, 80],
+                        borderColor: '#4ECDC4',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4ECDC4',
+                        pointRadius: 5,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                ...globalChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'Intensity Level' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        const ctxBar = document.getElementById('efficiencyBarChart').getContext('2d');
+        const labelsBar = wrapChartLabels(['Speed of Issue Resolution', 'Localized Social Friction', 'Systemic Accountability']);
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: labelsBar,
+                datasets: [
+                    {
+                        label: 'Direct Formal Access (WhatsApp)',
+                        data: [95, 85, 90],
+                        backgroundColor: '#4ECDC4',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Via Informal Intermediary',
+                        data: [40, 15, 30],
+                        backgroundColor: '#1A535C',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                ...globalChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'Impact Score (0-100)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
 </html>
