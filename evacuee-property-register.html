@@ -1,0 +1,2253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Evacuee Property Register — Deputy Custodian, Baramulla</title>
+<meta name="description" content="Offline register of evacuee properties for the Office of the Deputy Custodian, Baramulla." />
+<style>
+  :root{
+    --navy:#173a5e;
+    --navy-dark:#0f2942;
+    --accent:#8a6d3b;
+    --bg:#f4f5f7;
+    --card:#ffffff;
+    --line:#d9dde3;
+    --text:#1c2430;
+    --muted:#5b6675;
+    --ok:#1e7a46;
+    --warn:#a86b00;
+    --bad:#a52222;
+    --info:#1a5f8a;
+    --radius:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:15px;
+    line-height:1.5;
+  }
+  /* ---------- Header ---------- */
+  header.site{
+    background:var(--navy);
+    color:#fff;
+    padding:16px 20px;
+    border-bottom:4px solid var(--accent);
+  }
+  .site-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .emblem{
+    width:52px;height:52px;flex:none;border-radius:50%;
+    background:#fff;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;letter-spacing:.5px;
+    border:2px solid var(--accent);
+  }
+  .titles h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.3px}
+  .titles p{margin:2px 0 0;font-size:13px;opacity:.85}
+  .titles .dept{font-size:12px;opacity:.7;margin-top:1px}
+  /* ---------- Nav ---------- */
+  nav.tabs{background:var(--navy-dark);position:sticky;top:0;z-index:50}
+  .tabs-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap}
+  nav.tabs button{
+    background:none;border:none;color:#cfd8e3;
+    padding:13px 20px;font-size:14px;font-weight:600;cursor:pointer;
+    border-bottom:3px solid transparent;font-family:inherit;
+  }
+  nav.tabs button:hover{background:rgba(255,255,255,.07);color:#fff}
+  nav.tabs button.active{color:#fff;border-bottom-color:var(--accent);background:rgba(255,255,255,.05)}
+  /* ---------- Layout ---------- */
+  main{max-width:1280px;margin:0 auto;padding:20px}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;margin-bottom:18px;
+  }
+  .card h2{margin:0 0 4px;font-size:17px;color:var(--navy)}
+  .card h2 + .sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+  .section-title{font-size:13px;font-weight:700;color:var(--accent);
+    text-transform:uppercase;letter-spacing:.6px;margin:18px 0 8px;
+    border-bottom:1px solid var(--line);padding-bottom:5px}
+  .section-title:first-child{margin-top:0}
+  /* ---------- Stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
+  .stat{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--navy);
+    border-radius:var(--radius);padding:14px 16px}
+  .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .stat .value{font-size:26px;font-weight:700;color:var(--navy);margin-top:4px;line-height:1.1}
+  .stat.ok{border-left-color:var(--ok)} .stat.ok .value{color:var(--ok)}
+  .stat.warn{border-left-color:var(--warn)} .stat.warn .value{color:var(--warn)}
+  .stat.bad{border-left-color:var(--bad)} .stat.bad .value{color:var(--bad)}
+  .stat.info{border-left-color:var(--info)} .stat.info .value{color:var(--info)}
+  .stat .value.money{font-size:21px}
+  /* ---------- Buttons ---------- */
+  button.btn{
+    font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;
+    padding:9px 16px;border-radius:6px;border:1px solid var(--navy);
+    background:var(--navy);color:#fff;
+  }
+  button.btn:hover{background:var(--navy-dark)}
+  button.btn.ghost{background:#fff;color:var(--navy)}
+  button.btn.ghost:hover{background:#eef2f7}
+  button.btn.danger{background:var(--bad);border-color:var(--bad)}
+  button.btn.danger:hover{background:#8c1c1c}
+  button.btn.small{padding:5px 10px;font-size:13px}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+  /* ---------- Forms ---------- */
+  label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:4px}
+  input,select,textarea{
+    font-family:inherit;font-size:14px;width:100%;
+    padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--navy);outline-offset:-1px;border-color:var(--navy)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+  .field{min-width:0}
+  .req{color:var(--bad)}
+  .hint{font-size:12px;color:var(--muted);font-weight:400;margin-top:3px}
+  /* ---------- Toolbar ---------- */
+  .toolbar{display:grid;grid-template-columns:2fr repeat(3,1fr) auto;gap:10px;align-items:end}
+  @media(max-width:900px){.toolbar{grid-template-columns:1fr 1fr}}
+  /* ---------- Table ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{
+    background:#eef1f5;color:var(--navy);font-size:12px;text-transform:uppercase;
+    letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;
+  }
+  thead th.sortable{cursor:pointer;user-select:none}
+  thead th.sortable:hover{background:#e2e8f0}
+  tbody tr:nth-child(even){background:#fafbfc}
+  tbody tr:hover{background:#eff5fb}
+  td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  td.actions{white-space:nowrap}
+  .pid{font-weight:700;color:var(--navy);white-space:nowrap}
+  .empty{padding:44px 20px;text-align:center;color:var(--muted)}
+  .empty h3{color:var(--text);margin:0 0 6px}
+  /* ---------- Badges ---------- */
+  .badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11.5px;
+    font-weight:700;white-space:nowrap;border:1px solid}
+  .b-allotted{background:#e6f3ec;color:var(--ok);border-color:#b6ddc7}
+  .b-lease{background:#e7f0f7;color:var(--info);border-color:#b9d3e6}
+  .b-vacant{background:#eef0f3;color:var(--muted);border-color:#cfd5dd}
+  .b-litigation{background:#fdf1dd;color:var(--warn);border-color:#ecd3a0}
+  .b-encroached{background:#fbe9e9;color:var(--bad);border-color:#eec2c2}
+  .b-retrieved{background:#ede8f6;color:#54368f;border-color:#cfc2e6}
+  /* ---------- Modal ---------- */
+  .overlay{
+    display:none;position:fixed;inset:0;background:rgba(16,24,35,.6);
+    z-index:100;padding:20px;overflow-y:auto;
+  }
+  .overlay.open{display:block}
+  .modal{
+    background:#fff;max-width:920px;margin:20px auto;border-radius:var(--radius);
+    border-top:5px solid var(--accent);box-shadow:0 12px 40px rgba(0,0,0,.3);
+  }
+  .modal-head{padding:16px 20px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .modal-head h2{margin:0;font-size:17px;color:var(--navy)}
+  .modal-body{padding:20px}
+  .modal-foot{padding:14px 20px;border-top:1px solid var(--line);background:#f8f9fb;
+    display:flex;justify-content:flex-end;gap:10px;border-radius:0 0 var(--radius) var(--radius)}
+  .x{background:none;border:none;font-size:26px;line-height:1;cursor:pointer;color:var(--muted);padding:0 4px}
+  .x:hover{color:var(--bad)}
+  /* ---------- Misc ---------- */
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+    background:var(--navy-dark);color:#fff;padding:12px 22px;border-radius:6px;
+    font-size:14px;font-weight:600;z-index:200;opacity:0;
+    transition:opacity .25s,transform .25s;box-shadow:0 6px 20px rgba(0,0,0,.3);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.err{background:var(--bad)}
+  .note{background:#fdf8ec;border:1px solid #ecd9a8;border-left:4px solid var(--accent);
+    padding:12px 14px;border-radius:6px;font-size:13.5px;color:#5c4a24;margin-bottom:14px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 56px;gap:10px;align-items:center;
+    padding:5px 0;font-size:13.5px}
+  .bar{height:15px;background:#e6eaef;border-radius:3px;overflow:hidden}
+  .bar span{display:block;height:100%;background:var(--navy)}
+  .bar-row .cnt{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+  .count-line{font-size:13px;color:var(--muted);margin:10px 0 0}
+  .print-head{display:none}
+  .sign-row{display:none}
+  /* ---------- Print ---------- */
+  @media print{
+    body{background:#fff;font-size:11px}
+    header.site,nav.tabs,.no-print,.overlay,.toast{display:none !important}
+    main{max-width:none;padding:0}
+    .card{border:none;padding:0;margin:0 0 12px}
+    .panel{display:none !important}
+    .panel.print-target{display:block !important}
+    .print-head{display:block;text-align:center;margin-bottom:12px;
+      border-bottom:2px solid #000;padding-bottom:8px}
+    .print-head h1{margin:0;font-size:15px}
+    .print-head p{margin:2px 0;font-size:11px}
+    .table-wrap{overflow:visible;border:none}
+    table{font-size:9.5px}
+    th,td{border:1px solid #666;padding:3px 4px;color:#000}
+    .pid{color:#000}
+    thead th{background:#e8e8e8 !important;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tbody tr:nth-child(even){background:#fff}
+    .badge{border:none;padding:0;background:none !important;color:#000 !important;font-weight:600}
+    .stats{grid-template-columns:repeat(4,1fr)}
+    .stat{border:1px solid #999;border-left:1px solid #999;padding:6px}
+    .stat .value,.stat.ok .value,.stat.bad .value,.stat.warn .value,.stat.info .value{font-size:15px;color:#000}
+    .stat .label{color:#000}
+    tr{page-break-inside:avoid}
+    .sign-row{display:flex;justify-content:space-between;margin-top:44px;font-size:11px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="site-inner">
+    <div class="emblem">EP</div>
+    <div class="titles">
+      <h1>Office of the Deputy Custodian, Baramulla</h1>
+      <p>Evacuee Property Register &amp; Records Management</p>
+      <div class="dept">Department of Custodian, Evacuee Property &mdash; Union Territory of Jammu &amp; Kashmir</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="register">Property Register</button>
+    <button data-tab="reports">Reports</button>
+    <button data-tab="data">Backup &amp; Data</button>
+    <button data-tab="help">Help</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ================= DASHBOARD ================= -->
+  <section id="tab-dashboard" class="panel active">
+    <div class="card">
+      <h2>Office Summary</h2>
+      <p class="sub" id="dashUpdated">Overview of all properties recorded in this register.</p>
+      <div class="stats" id="statCards"></div>
+    </div>
+
+    <div class="card">
+      <h2>Properties by Status</h2>
+      <div id="byStatus"></div>
+    </div>
+
+    <div class="card">
+      <h2>Properties by Tehsil</h2>
+      <div id="byTehsil"></div>
+    </div>
+
+    <div class="card">
+      <h2>Attention Required</h2>
+      <p class="sub">Properties with outstanding arrears, or under litigation / encroachment.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Property ID</th><th>Village / Tehsil</th><th>Occupant</th>
+            <th>Status</th><th class="num">Arrears (&#8377;)</th>
+          </tr></thead>
+          <tbody id="attentionBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= REGISTER ================= -->
+  <section id="tab-register" class="panel">
+    <div class="card no-print">
+      <h2>Property Register</h2>
+      <p class="sub">Search, filter and manage all recorded evacuee properties.</p>
+      <div class="toolbar">
+        <div class="field">
+          <label for="fSearch">Search</label>
+          <input id="fSearch" type="search" placeholder="Property ID, khasra no., village, occupant, file no.&hellip;" />
+        </div>
+        <div class="field">
+          <label for="fTehsil">Tehsil</label>
+          <select id="fTehsil"><option value="">All tehsils</option></select>
+        </div>
+        <div class="field">
+          <label for="fStatus">Status</label>
+          <select id="fStatus"><option value="">All statuses</option></select>
+        </div>
+        <div class="field">
+          <label for="fNature">Nature</label>
+          <select id="fNature"><option value="">All types</option></select>
+        </div>
+        <div class="field">
+          <button class="btn" id="btnAdd">+ Add Property</button>
+        </div>
+      </div>
+      <p class="count-line" id="countLine"></p>
+    </div>
+
+    <div class="table-wrap">
+      <table id="regTable">
+        <thead><tr>
+          <th class="sortable" data-sort="pid">Property ID</th>
+          <th class="sortable" data-sort="khasra">Khasra / Survey</th>
+          <th class="sortable" data-sort="village">Village</th>
+          <th class="sortable" data-sort="tehsil">Tehsil</th>
+          <th class="sortable" data-sort="nature">Nature</th>
+          <th class="sortable" data-sort="areaMarla">Area</th>
+          <th class="sortable" data-sort="occupant">Occupant / Allottee</th>
+          <th class="sortable" data-sort="status">Status</th>
+          <th class="sortable" data-sort="geo">Geo</th>
+          <th class="sortable num" data-sort="rent">Annual Rent</th>
+          <th class="sortable num" data-sort="arrears">Arrears</th>
+          <th class="no-print">Actions</th>
+        </tr></thead>
+        <tbody id="regBody"></tbody>
+      </table>
+    </div>
+    <div id="regEmpty" class="empty" style="display:none">
+      <h3>No properties recorded yet</h3>
+      <p>Start by adding the first property to the register.</p>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn" id="btnAddEmpty">+ Add First Property</button>
+        <button class="btn ghost" id="btnDemoEmpty">Load Sample Records</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= REPORTS ================= -->
+  <section id="tab-reports" class="panel">
+    <div class="card no-print">
+      <h2>Printable Register Report</h2>
+      <p class="sub">Choose what to include, then print or save as PDF for office records.</p>
+      <div class="grid">
+        <div class="field">
+          <label for="rTehsil">Tehsil</label>
+          <select id="rTehsil"><option value="">All tehsils</option></select>
+        </div>
+        <div class="field">
+          <label for="rStatus">Status</label>
+          <select id="rStatus"><option value="">All statuses</option></select>
+        </div>
+        <div class="field">
+          <label for="rType">Report</label>
+          <select id="rType">
+            <option value="register">Register of properties</option>
+            <option value="defaulters">Rent defaulters (recovery drive)</option>
+            <option value="geo">Geo-tagging progress</option>
+            <option value="weekly">Weekly progress return</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rTitle">Report title</label>
+          <input id="rTitle" type="text" value="Register of Evacuee Properties" />
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn" id="btnBuildReport">Generate Report</button>
+        <button class="btn ghost" id="btnPrint">Print / Save as PDF</button>
+      </div>
+    </div>
+
+    <div class="card" id="reportCard" style="display:none">
+      <div class="print-head">
+        <h1>OFFICE OF THE DEPUTY CUSTODIAN, BARAMULLA</h1>
+        <p>Department of Custodian, Evacuee Property &mdash; Union Territory of Jammu &amp; Kashmir</p>
+        <p id="pTitle" style="font-weight:700"></p>
+        <p id="pMeta"></p>
+      </div>
+      <div class="no-print"><h2 id="sTitle"></h2><p class="sub" id="sMeta"></p></div>
+      <div class="stats" id="repStats" style="margin-bottom:14px"></div>
+      <div class="table-wrap">
+        <table>
+          <thead id="repHead"></thead>
+          <tbody id="repBody"></tbody>
+          <tfoot id="repFoot"></tfoot>
+        </table>
+      </div>
+      <div class="sign-row">
+        <div>Prepared by: ______________________</div>
+        <div>Deputy Custodian, Baramulla: ______________________</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DATA ================= -->
+  <section id="tab-data" class="panel">
+    <div class="card">
+      <h2>Cloud Sync</h2>
+      <p class="sub">Keep the office computer and the phone showing the same register.</p>
+      <div class="note" id="syncNote">
+        Sync works through <strong>one file</strong> kept in the office's own cloud folder
+        &mdash; Google Drive, OneDrive, Dropbox, or even a pen drive or shared network folder.
+        Each device reads that file, merges it with its own records, and writes the result back.
+        Nothing is sent to any other company's server, and no account or password is needed here.
+      </div>
+      <p id="syncStatus" style="font-weight:600"></p>
+      <div class="btn-row" id="syncButtons"></div>
+      <p class="hint" id="syncHint" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card" id="deletedCard" style="display:none">
+      <h2>Deleted Records</h2>
+      <p class="sub">Deleted properties are kept here so they can be brought back, and so the
+        deletion reaches the other device on the next sync.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Property ID</th><th>Village / Tehsil</th><th>Occupant</th>
+            <th>Deleted on</th><th class="no-print">Action</th>
+          </tr></thead>
+          <tbody id="deletedBody"></tbody>
+        </table>
+      </div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn danger" id="btnPurge">Remove Permanently</button>
+      </div>
+      <p class="hint">Removing permanently frees the space but drops the record of the deletion,
+        so a copy still held on another device could come back on the next sync.</p>
+    </div>
+
+    <div class="card">
+      <h2>Backup &amp; Restore</h2>
+      <p class="sub">Records are saved inside this computer's browser. Take a backup regularly and keep the file safe.</p>
+      <div class="note">
+        <strong>Important:</strong> Records are kept on this device. If its data is cleared, or the
+        device is changed, they are lost unless a backup file has been saved &mdash; so take a backup
+        at the end of each working day. Cloud Sync above keeps two devices in step, but it is not a
+        substitute for a backup: a record deleted on one device is deleted on the other too.
+      </div>
+      <div class="section-title">Backup</div>
+      <div class="btn-row">
+        <button class="btn" id="btnBackup">Download Backup File (.json)</button>
+        <button class="btn ghost" id="btnCsv">Export to Excel / CSV</button>
+      </div>
+      <div class="section-title">Restore</div>
+      <p class="hint" style="margin-bottom:8px">Select a previously downloaded backup file. You may add its records to the existing register, or replace everything.</p>
+      <div class="grid">
+        <div class="field">
+          <label for="restoreFile">Backup file</label>
+          <input type="file" id="restoreFile" accept=".json,application/json" />
+        </div>
+        <div class="field">
+          <label for="restoreMode">On restore</label>
+          <select id="restoreMode">
+            <option value="merge">Add to existing records (skip duplicates)</option>
+            <option value="replace">Replace all existing records</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn" id="btnRestore">Restore from File</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Sample &amp; Reset</h2>
+      <p class="sub">For practice and training purposes.</p>
+      <div class="btn-row">
+        <button class="btn ghost" id="btnDemo">Load Sample Records</button>
+        <button class="btn danger" id="btnClear">Delete All Records</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HELP ================= -->
+  <section id="tab-help" class="panel">
+    <div class="card">
+      <h2>How to Use This Register</h2>
+      <div class="section-title">Getting started</div>
+      <p>Open <strong>Property Register</strong> and press <strong>+ Add Property</strong>. Fill in the details of the
+      property and press <strong>Save Property</strong>. Only the village, tehsil and nature of the property are
+      compulsory &mdash; every other field may be filled in later as records become available.</p>
+
+      <div class="section-title">Finding a property</div>
+      <p>Type any part of the property ID, khasra number, village name, occupant's name or file number in the
+      <strong>Search</strong> box. The list narrows down as you type. The three drop-downs beside it filter by tehsil,
+      status and nature of property. Click any column heading to sort by that column.</p>
+
+      <div class="section-title">Editing and deleting</div>
+      <p>Every row has <strong>Edit</strong> and <strong>Delete</strong> buttons at the right end. Deletion asks for
+      confirmation and cannot be undone &mdash; restore from a backup file if a record is removed by mistake.</p>
+
+      <div class="section-title">Printing a report</div>
+      <p>Go to <strong>Reports</strong>, choose the tehsil and status you need, press <strong>Generate Report</strong>,
+      then <strong>Print / Save as PDF</strong>. The printed page carries the office heading and signature lines,
+      and totals are shown at the bottom of the table.</p>
+
+      <div class="section-title">Geo-tagging a property</div>
+      <p>Standing at the property, open it for editing and press <strong>Capture Location</strong>
+      under Geo-tagging. The app reads the coordinates from the phone and shows how accurate the
+      reading is; press <strong>Save Property</strong> to keep it. The register then shows that
+      property as <strong>Tagged</strong>, and <strong>Reports &rarr; Geo-tagging progress</strong>
+      lists whatever is still to be done. Coordinates can also be typed in by hand.</p>
+
+      <div class="section-title">The property file &mdash; rent and inspections</div>
+      <p>Each row in the register has a <strong>File</strong> button. It opens that property's
+      file, holding three things:</p>
+      <p><strong>Rent demanded.</strong> Add each demand as it is raised, with the period it covers.
+      <strong>Receipts issued.</strong> Add every payment with its receipt number, date and mode.
+      <strong>Inspections.</strong> Add the date, the officer, the condition of the property and
+      what was found.</p>
+      <p>Arrears are then worked out by the app &mdash; opening balance, plus everything demanded,
+      less everything received &mdash; so the figure can always be traced back to entries instead of
+      being typed in from memory. Any arrears figure entered before this became the opening balance,
+      so nothing already recorded was lost.</p>
+
+      <div class="section-title">Reports for the office</div>
+      <p><strong>Register of properties</strong> is the full register. <strong>Rent defaulters</strong>
+      lists everyone in arrears, largest first, with their contact details, for a recovery drive.
+      <strong>Geo-tagging progress</strong> shows how many properties are tagged and lists those
+      still pending. <strong>Weekly progress return</strong> summarises the week's receipts,
+      collections, inspections and tagging alongside the standing position.</p>
+
+      <div class="section-title">Using it on two devices</div>
+      <p>Go to <strong>Backup &amp; Data &rarr; Cloud Sync</strong>. On the first device press
+      <strong>Create Sync File</strong> and save it inside the office's cloud folder &mdash; the
+      Google Drive, OneDrive or Dropbox folder already in use, or a folder on a shared drive.
+      On every other device press <strong>Use Existing Sync File</strong> and pick that same file.
+      From then on both devices show the same register: each one merges the file with its own
+      records a few seconds after any change, and again whenever it is opened.</p>
+      <p>Entries made on two devices at the same time are all kept &mdash; nothing is thrown away.
+      If a property is edited in both places, the more recent edit is the one kept. If both
+      devices happen to give a new property the same number, one of them is renumbered
+      automatically so no two properties share an ID.</p>
+      <p>No account or password is needed here, and nothing is sent to any company running this
+      register. Whichever cloud folder is chosen does the carrying.</p>
+
+      <div class="section-title">Deleted records</div>
+      <p>Deleting a property does not destroy it. It moves to <strong>Deleted Records</strong>
+      under Backup &amp; Data, where it can be restored. Keeping it there is also what tells the
+      other device that the property was deleted, so it does not reappear at the next sync.</p>
+
+      <div class="section-title">Keeping records safe</div>
+      <p>The register works without internet and keeps its data on this computer. Go to
+      <strong>Backup &amp; Data</strong> and press <strong>Download Backup File</strong> at the end of each day.
+      Keep the downloaded file on a pen drive or another folder. To move records to a new computer, copy this
+      file along with the backup, open the file there, and use <strong>Restore from File</strong>.</p>
+
+      <div class="section-title">Area measurement</div>
+      <p>Area is entered in <strong>kanal</strong> and <strong>marla</strong> (20 marla = 1 kanal). Enter the marla
+      portion only up to 19; whole kanals go in the kanal box.</p>
+
+      <div class="section-title">Nothing is sent anywhere</div>
+      <p>This is a standalone file. No information leaves this computer, and no internet connection is needed at
+      any point.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= MODAL ================= -->
+<div class="overlay" id="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h2 id="modalTitle">Add Property</h2>
+      <button class="x" id="btnClose" aria-label="Close">&times;</button>
+    </div>
+    <form id="propForm" autocomplete="off">
+      <div class="modal-body">
+        <input type="hidden" id="fId" />
+
+        <div class="section-title">Identification</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fPid">Property ID</label>
+            <input id="fPid" type="text" readonly style="background:#f1f3f6" />
+            <div class="hint">Allotted automatically</div>
+          </div>
+          <div class="field">
+            <label for="fKhasra">Khasra / Survey No.</label>
+            <input id="fKhasra" type="text" placeholder="e.g. 412/3" />
+          </div>
+          <div class="field">
+            <label for="fKhata">Khata / Khewat No.</label>
+            <input id="fKhata" type="text" placeholder="e.g. 87" />
+          </div>
+          <div class="field">
+            <label for="fFile">Office File No.</label>
+            <input id="fFile" type="text" placeholder="e.g. DC/BLA/EP/2024/118" />
+          </div>
+        </div>
+
+        <div class="section-title">Location</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fVillage">Village / Mohalla <span class="req">*</span></label>
+            <input id="fVillage" type="text" required placeholder="e.g. Sheeri" />
+          </div>
+          <div class="field">
+            <label for="fTehsilIn">Tehsil <span class="req">*</span></label>
+            <input id="fTehsilIn" type="text" required list="tehsilList" placeholder="e.g. Baramulla" />
+            <datalist id="tehsilList"></datalist>
+          </div>
+          <div class="field">
+            <label for="fNiabat">Niabat / Patwar Halqa</label>
+            <input id="fNiabat" type="text" />
+          </div>
+        </div>
+
+        <div class="section-title">Geo-tagging</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fLat">Latitude</label>
+            <input id="fLat" type="text" placeholder="Not tagged" />
+          </div>
+          <div class="field">
+            <label for="fLng">Longitude</label>
+            <input id="fLng" type="text" placeholder="Not tagged" />
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="btn" id="btnGeo" style="width:100%">Capture Location</button>
+            <div class="hint" id="geoHint">Stand at the property and press this.</div>
+          </div>
+        </div>
+
+        <div class="section-title">Property Details</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fNatureIn">Nature of Property <span class="req">*</span></label>
+            <select id="fNatureIn" required></select>
+          </div>
+          <div class="field">
+            <label for="fKanal">Area &mdash; Kanal</label>
+            <input id="fKanal" type="number" min="0" step="1" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="fMarla">Area &mdash; Marla</label>
+            <input id="fMarla" type="number" min="0" step="1" placeholder="0" />
+            <div class="hint">20 marla = 1 kanal</div>
+          </div>
+          <div class="field">
+            <label for="fOrigOwner">Original Owner (Evacuee)</label>
+            <input id="fOrigOwner" type="text" />
+          </div>
+        </div>
+
+        <div class="section-title">Occupancy &amp; Allotment</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fStatusIn">Present Status <span class="req">*</span></label>
+            <select id="fStatusIn" required></select>
+          </div>
+          <div class="field">
+            <label for="fOccupant">Occupant / Allottee Name</label>
+            <input id="fOccupant" type="text" />
+          </div>
+          <div class="field">
+            <label for="fFather">Father's / Husband's Name</label>
+            <input id="fFather" type="text" />
+          </div>
+          <div class="field">
+            <label for="fAddress">Address of Occupant</label>
+            <input id="fAddress" type="text" />
+          </div>
+          <div class="field">
+            <label for="fPhone">Contact Number</label>
+            <input id="fPhone" type="text" />
+          </div>
+          <div class="field">
+            <label for="fAllotDate">Date of Allotment / Lease</label>
+            <input id="fAllotDate" type="date" />
+          </div>
+          <div class="field">
+            <label for="fExpiry">Lease Valid Up To</label>
+            <input id="fExpiry" type="date" />
+          </div>
+        </div>
+
+        <div class="section-title">Rent &amp; Recovery</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fRent">Annual Rent (&#8377;)</label>
+            <input id="fRent" type="number" min="0" step="1" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="fPaidUpto">Rent Paid Up To</label>
+            <input id="fPaidUpto" type="date" />
+          </div>
+          <div class="field">
+            <label for="fArrears">Arrears Outstanding (&#8377;)</label>
+            <input id="fArrears" type="number" min="0" step="1" placeholder="0" />
+          </div>
+        </div>
+
+        <div class="section-title">Legal &amp; Remarks</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fCourt">Court / Case Reference</label>
+            <input id="fCourt" type="text" placeholder="If under litigation" />
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label for="fRemarks">Remarks</label>
+          <textarea id="fRemarks" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn ghost" id="btnCancel">Cancel</button>
+        <button type="submit" class="btn">Save Property</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="fileOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="fileTitle">
+    <div class="modal-head">
+      <h2 id="fileTitle">Property File</h2>
+      <button class="x" id="fileClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="stats" id="fileStats"></div>
+
+      <div class="section-title">Rent Demanded</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Period</th><th>Raised on</th><th class="num">Amount (&#8377;)</th><th></th>
+        </tr></thead><tbody id="demandBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="dPeriod">Period</label>
+          <input id="dPeriod" type="text" placeholder="e.g. 2025-26" /></div>
+        <div class="field"><label for="dDate">Raised on</label>
+          <input id="dDate" type="date" /></div>
+        <div class="field"><label for="dAmount">Amount (&#8377;)</label>
+          <input id="dAmount" type="number" min="0" step="1" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddDemand" style="width:100%">Add Demand</button></div>
+      </div>
+
+      <div class="section-title">Receipts Issued</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Receipt No.</th><th>Date</th><th>Mode</th><th class="num">Amount (&#8377;)</th><th></th>
+        </tr></thead><tbody id="receiptBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="pNo">Receipt No.</label>
+          <input id="pNo" type="text" /></div>
+        <div class="field"><label for="pDate">Date</label>
+          <input id="pDate" type="date" /></div>
+        <div class="field"><label for="pMode">Mode</label>
+          <select id="pMode"></select></div>
+        <div class="field"><label for="pAmount">Amount (&#8377;)</label>
+          <input id="pAmount" type="number" min="0" step="1" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddReceipt" style="width:100%">Add Receipt</button></div>
+      </div>
+
+      <div class="section-title">Inspections</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Date</th><th>Inspected by</th><th>Condition</th><th>Findings</th><th></th>
+        </tr></thead><tbody id="inspBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="iDate">Date</label>
+          <input id="iDate" type="date" /></div>
+        <div class="field"><label for="iBy">Inspected by</label>
+          <input id="iBy" type="text" placeholder="Field Inspector" /></div>
+        <div class="field"><label for="iCond">Condition</label>
+          <select id="iCond"></select></div>
+        <div class="field"><label for="iFind">Findings</label>
+          <input id="iFind" type="text" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddInsp" style="width:100%">Add Inspection</button></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="fileDone">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Reference data ---------------- */
+  var TEHSILS = ["Baramulla","Sopore","Pattan","Uri","Tangmarg","Boniyar","Kreeri","Rafiabad",
+                 "Zaingeer","Dangiwacha","Watergam","Sangrama","Kunzer","Wagoora","Chandoosa","Singhpora"];
+  var NATURES = ["Residential House","Shop / Commercial","Agricultural Land","Orchard","Plot / Land",
+                 "Godown","Building","Other"];
+  var STATUSES = [
+    {name:"Allotted",      cls:"b-allotted"},
+    {name:"Under Lease",   cls:"b-lease"},
+    {name:"Vacant",        cls:"b-vacant"},
+    {name:"Under Litigation", cls:"b-litigation"},
+    {name:"Encroached",    cls:"b-encroached"},
+    {name:"Retrieved",     cls:"b-retrieved"}
+  ];
+  var STORE = "dc_baramulla_evacuee_register_v1";
+  // Payment modes seen at a district office counter.
+  var PAY_MODES = ["Cash", "Bank challan", "Cheque / DD", "Online transfer"];
+  var CONDITIONS = ["Good", "Needs repair", "Dilapidated", "Under encroachment", "Not traceable"];
+
+  /* ---------------- State ---------------- */
+  var records = [];
+  var sortKey = "pid", sortDir = 1;
+  var pendingGeo = null;
+  var reportRows = [];
+
+  /* ---------------- Helpers ---------------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+  function matchesSel(el, sel){
+    var f = el.matches || el.webkitMatchesSelector || el.msMatchesSelector;
+    return f ? f.call(el, sel) : false;
+  }
+  // Stands in for Element.closest(), which older WebViews lack.
+  function up(el, sel){
+    while (el && el.nodeType === 1) {
+      if (matchesSel(el, sel)) return el;
+      el = el.parentNode;
+    }
+    return null;
+  }
+  function each(list, fn){
+    for (var i = 0; i < list.length; i++) fn(list[i], i);
+  }
+  function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
+  function money(n){
+    n = Math.round(num(n));
+    var neg = n < 0, s = String(Math.abs(n));
+    if (s.length > 3) {
+      var last3 = s.slice(-3), rest = s.slice(0, -3);
+      s = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + last3;
+    }
+    return (neg ? "-" : "") + s;
+  }
+  // Records the register shows. Tombstones stay in the array but out of sight.
+  function live(){
+    return records.filter(function(r){ return !r.deleted; });
+  }
+  function deletedRows(){
+    return records.filter(function(r){ return !!r.deleted; });
+  }
+  function statusClass(name){
+    for (var i=0;i<STATUSES.length;i++) if (STATUSES[i].name === name) return STATUSES[i].cls;
+    return "b-vacant";
+  }
+  function areaText(r){
+    var k = num(r.kanal), m = num(r.marla);
+    if (!k && !m) return "—";
+    var out = [];
+    if (k) out.push(k + "K");
+    if (m) out.push(m + "M");
+    return out.join(" ");
+  }
+  function totalMarla(r){ return num(r.kanal)*20 + num(r.marla); }
+  function hasGeo(r){ return !!(r.lat && r.lng); }
+  function geoText(r){
+    if (!hasGeo(r)) return "Not tagged";
+    return num(r.lat).toFixed(6) + ", " + num(r.lng).toFixed(6)
+         + (r.geoAcc ? " (\u00b1" + Math.round(num(r.geoAcc)) + " m)" : "")
+         + (r.geoAt ? " on " + dateText(String(r.geoAt).slice(0,10)) : "");
+  }
+
+  /* Rent position. The figure typed in when the property was first entered
+     becomes the opening balance carried forward; everything after it is built
+     from demands raised and receipts issued, so the arrears shown can always
+     be traced back to entries. */
+  function sumOf(list, field){
+    var t = 0;
+    (list || []).forEach(function(x){ t += num(x[field]); });
+    return t;
+  }
+  function arrearsOf(r){
+    return num(r.openingArrears) + sumOf(r.demands, "amount") - sumOf(r.receipts, "amount");
+  }
+  function collectedOf(r){ return sumOf(r.receipts, "amount"); }
+  function dateText(d){
+    if (!d) return "—";
+    var p = String(d).split("-");
+    if (p.length !== 3) return d;
+    return p[2] + "-" + p[1] + "-" + p[0];
+  }
+  function today(){
+    var d = new Date(), p = function(x){ return (x<10?"0":"") + x; };
+    return p(d.getDate()) + "-" + p(d.getMonth()+1) + "-" + d.getFullYear();
+  }
+  var toastTimer;
+  function toast(msg, isErr){
+    var t = $("toast");
+    t.textContent = msg;
+    t.className = "toast show" + (isErr ? " err" : "");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.className = "toast" + (isErr ? " err" : ""); }, 2800);
+  }
+
+  /* ---------------- Persistence ---------------- */
+  function save(fromSync){
+    try {
+      localStorage.setItem(STORE, JSON.stringify(records));
+    } catch (e) {
+      toast("Could not save \u2014 the register may be full. Take a backup immediately.", true);
+    }
+    if (!fromSync) scheduleSync();
+  }
+  function load(){
+    try {
+      var raw = localStorage.getItem(STORE);
+      records = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(records)) records = [];
+    } catch (e) { records = []; }
+    records.forEach(migrate);
+  }
+  /* Registers written before the rent ledger existed carry a single typed
+     arrears figure. It becomes the opening balance so nothing is lost. */
+  function migrate(r){
+    if (r.openingArrears === undefined) {
+      r.openingArrears = num(r.arrears);
+    }
+    delete r.arrears;
+    if (!r.demands) r.demands = [];
+    if (!r.receipts) r.receipts = [];
+    if (!r.inspections) r.inspections = [];
+  }
+  function nextPid(){
+    var max = 0;
+    records.forEach(function(r){
+      var m = /(\d+)\s*$/.exec(r.pid || "");
+      if (m) { var v = parseInt(m[1],10); if (v > max) max = v; }
+    });
+    var n = String(max + 1);
+    while (n.length < 4) n = "0" + n;
+    return "EP/BLA/" + n;
+  }
+  function uid(){
+    return "r" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  }
+
+  /* ---------------- Populate selects ---------------- */
+  function fillSelect(el, values, allLabel){
+    var html = allLabel ? '<option value="">' + esc(allLabel) + "</option>" : "";
+    values.forEach(function(v){ html += '<option value="' + esc(v) + '">' + esc(v) + "</option>"; });
+    el.innerHTML = html;
+  }
+  function knownTehsils(){
+    var set = {}, out = [];
+    TEHSILS.forEach(function(t){ set[t] = 1; });
+    live().forEach(function(r){ if (r.tehsil) set[r.tehsil] = 1; });
+    for (var k in set) if (set.hasOwnProperty(k)) out.push(k);
+    return out.sort();
+  }
+  function refreshTehsilOptions(){
+    var list = knownTehsils(), cur;
+    [["fTehsil","All tehsils"],["rTehsil","All tehsils"]].forEach(function(pair){
+      var el = $(pair[0]); cur = el.value;
+      fillSelect(el, list, pair[1]);
+      el.value = cur;
+    });
+    $("tehsilList").innerHTML = list.map(function(t){
+      return '<option value="' + esc(t) + '"></option>';
+    }).join("");
+  }
+  function initSelects(){
+    var names = STATUSES.map(function(s){ return s.name; });
+    fillSelect($("fStatus"), names, "All statuses");
+    fillSelect($("rStatus"), names, "All statuses");
+    fillSelect($("fStatusIn"), names, "");
+    fillSelect($("fNature"), NATURES, "All types");
+    fillSelect($("fNatureIn"), NATURES, "");
+    refreshTehsilOptions();
+  }
+
+  /* ---------------- Filtering ---------------- */
+  function filtered(){
+    var q = $("fSearch").value.trim().toLowerCase();
+    var t = $("fTehsil").value, s = $("fStatus").value, n = $("fNature").value;
+    var out = live().filter(function(r){
+      if (t && r.tehsil !== t) return false;
+      if (s && r.status !== s) return false;
+      if (n && r.nature !== n) return false;
+      if (!q) return true;
+      var hay = [r.pid,r.khasra,r.khata,r.village,r.tehsil,r.niabat,r.nature,r.occupant,
+                 r.father,r.address,r.phone,r.origOwner,r.fileNo,r.court,r.remarks]
+                .join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+    return sortRows(out);
+  }
+  function sortRows(rows){
+    var k = sortKey, d = sortDir;
+    return rows.slice().sort(function(a,b){
+      var va, vb;
+      if (k === "areaMarla") { va = totalMarla(a); vb = totalMarla(b); }
+      else if (k === "rent") { va = num(a.rent); vb = num(b.rent); }
+      else if (k === "arrears") { va = arrearsOf(a); vb = arrearsOf(b); }
+      else if (k === "geo") { va = hasGeo(a) ? 0 : 1; vb = hasGeo(b) ? 0 : 1; }
+      else { va = String(a[k] || "").toLowerCase(); vb = String(b[k] || "").toLowerCase(); }
+      if (va < vb) return -1 * d;
+      if (va > vb) return 1 * d;
+      return 0;
+    });
+  }
+
+  /* ---------------- Register table ---------------- */
+  function renderRegister(){
+    var rows = filtered(), body = $("regBody"), total = live().length;
+    $("countLine").textContent =
+      "Showing " + rows.length + " of " + total + " propert" +
+      (total === 1 ? "y" : "ies") + ".";
+    $("regEmpty").style.display = total === 0 ? "block" : "none";
+    document.querySelector("#regTable").style.display = total === 0 ? "none" : "";
+
+    if (total && !rows.length) {
+      body.innerHTML = '<tr><td colspan="12" class="empty">' +
+        "No property matches the current search or filters.</td></tr>";
+      return;
+    }
+    body.innerHTML = rows.map(function(r){
+      return "<tr>" +
+        '<td class="pid">' + esc(r.pid) + "</td>" +
+        "<td>" + esc(r.khasra || "—") + "</td>" +
+        "<td>" + esc(r.village) + "</td>" +
+        "<td>" + esc(r.tehsil) + "</td>" +
+        "<td>" + esc(r.nature) + "</td>" +
+        "<td>" + esc(areaText(r)) + "</td>" +
+        "<td>" + esc(r.occupant || "—") + "</td>" +
+        '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+        "<td>" + (hasGeo(r)
+            ? '<span class="badge b-allotted" title="' + esc(geoText(r)) + '">Tagged</span>'
+            : '<span class="badge b-vacant">Not tagged</span>') + "</td>" +
+        '<td class="num">' + (num(r.rent) ? money(r.rent) : "—") + "</td>" +
+        '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "—") + "</td>" +
+        '<td class="actions no-print">' +
+          '<button class="btn ghost small" data-edit="' + esc(r.id) + '">Edit</button> ' +
+          '<button class="btn ghost small" data-file="' + esc(r.id) + '">File</button> ' +
+          '<button class="btn danger small" data-del="' + esc(r.id) + '">Delete</button>' +
+        "</td></tr>";
+    }).join("");
+  }
+
+  /* ---------------- Dashboard ---------------- */
+  function renderDashboard(){
+    var totalRent = 0, totalArrears = 0, marla = 0, counts = {}, tehsils = {};
+    var shown = live();
+    var tagged = 0, collected = 0;
+    shown.forEach(function(r){
+      totalRent += num(r.rent);
+      totalArrears += arrearsOf(r);
+      if (hasGeo(r)) tagged++;
+      collected += collectedOf(r);
+      marla += totalMarla(r);
+      counts[r.status] = (counts[r.status] || 0) + 1;
+      tehsils[r.tehsil] = (tehsils[r.tehsil] || 0) + 1;
+    });
+    var kanal = Math.floor(marla / 20), rem = marla % 20;
+
+    $("statCards").innerHTML = [
+      card("Total Properties", shown.length, ""),
+      card("Allotted / Leased", (counts["Allotted"]||0) + (counts["Under Lease"]||0), "ok"),
+      card("Vacant", counts["Vacant"] || 0, "info"),
+      card("Under Litigation", counts["Under Litigation"] || 0, "warn"),
+      card("Encroached", counts["Encroached"] || 0, "bad"),
+      card("Total Area", kanal + "K " + rem + "M", "", true),
+      card("Annual Rent Demand", "₹ " + money(totalRent), "ok", true),
+      card("Arrears Outstanding", "₹ " + money(totalArrears), totalArrears > 0 ? "bad" : "ok", true),
+      card("Geo-tagged", tagged + " of " + shown.length,
+           (shown.length && tagged === shown.length) ? "ok" : "warn"),
+      card("Rent Collected", "₹ " + money(collected), "ok", true)
+    ].join("");
+
+    $("dashUpdated").textContent =
+      shown.length ? "Overview of all properties recorded in this register. As on " + today() + "."
+                   : "No properties recorded yet. Open the Property Register to add the first entry.";
+
+    $("byStatus").innerHTML = bars(STATUSES.map(function(s){ return s.name; }), counts, shown.length)
+      || '<p class="hint">No records yet.</p>';
+
+    var tKeys = Object.keys(tehsils).sort(function(a,b){ return tehsils[b] - tehsils[a]; });
+    $("byTehsil").innerHTML = bars(tKeys, tehsils, shown.length)
+      || '<p class="hint">No records yet.</p>';
+
+    var attention = shown.filter(function(r){
+      return arrearsOf(r) > 0 || r.status === "Under Litigation" || r.status === "Encroached";
+    }).sort(function(a,b){ return arrearsOf(b) - arrearsOf(a); });
+
+    $("attentionBody").innerHTML = attention.length
+      ? attention.map(function(r){
+          return "<tr>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.occupant || "—") + "</td>" +
+            '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+            '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "—") + "</td></tr>";
+        }).join("")
+      : '<tr><td colspan="5" class="empty">Nothing pending. No arrears, litigation or encroachment recorded.</td></tr>';
+  }
+  function card(label, value, cls, isMoney){
+    return '<div class="stat ' + cls + '"><div class="label">' + esc(label) + "</div>" +
+           '<div class="value' + (isMoney ? " money" : "") + '">' + esc(value) + "</div></div>";
+  }
+  function bars(keys, counts, total){
+    var rows = keys.filter(function(k){ return counts[k]; });
+    if (!rows.length) return "";
+    return rows.map(function(k){
+      var c = counts[k], pct = total ? Math.round(c / total * 100) : 0;
+      return '<div class="bar-row"><div>' + esc(k) + "</div>" +
+             '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
+             '<div class="cnt">' + c + "</div></div>";
+    }).join("");
+  }
+
+  /* ---------------- Modal ---------------- */
+  var FIELDS = {
+    fPid:"pid", fKhasra:"khasra", fKhata:"khata", fFile:"fileNo",
+    fVillage:"village", fTehsilIn:"tehsil", fNiabat:"niabat",
+    fNatureIn:"nature", fKanal:"kanal", fMarla:"marla", fOrigOwner:"origOwner",
+    fStatusIn:"status", fOccupant:"occupant", fFather:"father", fAddress:"address",
+    fPhone:"phone", fAllotDate:"allotDate", fExpiry:"expiry",
+    fRent:"rent", fPaidUpto:"paidUpto", fArrears:"openingArrears",
+    fCourt:"court", fRemarks:"remarks",
+    fLat:"lat", fLng:"lng"
+  };
+  // Held on the record but not typed into the form; they must survive an edit.
+  var KEPT = ["geoAt","geoAcc","demands","receipts","inspections",
+              "deleted","deletedAt","createdAt"];
+  function openModal(rec){
+    $("modalTitle").textContent = rec ? "Edit Property — " + rec.pid : "Add Property";
+    $("fId").value = rec ? rec.id : "";
+    for (var el in FIELDS) if (FIELDS.hasOwnProperty(el)) {
+      $(el).value = rec ? (rec[FIELDS[el]] == null ? "" : rec[FIELDS[el]]) : "";
+    }
+    if (!rec) {
+      $("fPid").value = nextPid();
+      $("fStatusIn").value = "Allotted";
+      $("fNatureIn").value = NATURES[0];
+    }
+    pendingGeo = null;
+    $("geoHint").textContent = rec && hasGeo(rec)
+      ? "Tagged " + geoText(rec) + ". Press to re-tag."
+      : "Stand at the property and press this.";
+    $("overlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+    setTimeout(function(){ $("fVillage").focus(); }, 40);
+  }
+  function closeModal(){
+    $("overlay").classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  function submitForm(e){
+    e.preventDefault();
+    var marla = num($("fMarla").value);
+    if (marla > 19) { toast("Marla must be between 0 and 19. Use the kanal box for whole kanals.", true); return; }
+
+    var id = $("fId").value, existing = null, i;
+    if (id) {
+      for (i = 0; i < records.length; i++) {
+        if (records[i].id === id) { existing = records[i]; break; }
+      }
+    }
+    var rec = {};
+    if (existing) {
+      KEPT.forEach(function(k){
+        if (existing[k] !== undefined) rec[k] = existing[k];
+      });
+    }
+    for (var el in FIELDS) if (FIELDS.hasOwnProperty(el)) {
+      rec[FIELDS[el]] = $(el).value.trim();
+    }
+    ["kanal","marla","rent","openingArrears"].forEach(function(k){
+      rec[k] = rec[k] === "" ? 0 : num(rec[k]);
+    });
+    ["lat","lng"].forEach(function(k){ if (rec[k] === "") delete rec[k]; });
+    if (pendingGeo && rec.lat && rec.lng) {
+      rec.geoAt = pendingGeo.at;
+      rec.geoAcc = pendingGeo.acc;
+    }
+    migrate(rec);
+
+    if (existing) {
+      rec.id = id;
+      rec.updatedAt = new Date().toISOString();
+      records[i] = rec;
+      toast("Property " + rec.pid + " updated.");
+    } else {
+      rec.id = uid();
+      rec.createdAt = rec.updatedAt = new Date().toISOString();
+      records.push(rec);
+      toast("Property " + rec.pid + " added to the register.");
+    }
+    save(); closeModal(); refreshTehsilOptions(); renderAll();
+  }
+
+  /* ---------------- Reports ---------------- */
+  function buildReport(){
+    var t = $("rTehsil").value, st = $("rStatus").value, kind = $("rType").value;
+    reportRows = sortRows(live().filter(function(r){
+      if (t && r.tehsil !== t) return false;
+      if (st && r.status !== st) return false;
+      return true;
+    }));
+
+    if (kind === "defaulters") {
+      reportRows = reportRows.filter(function(r){ return arrearsOf(r) > 0; })
+        .sort(function(a, b){ return arrearsOf(b) - arrearsOf(a); });
+    } else if (kind === "geo") {
+      reportRows = reportRows.filter(function(r){ return !hasGeo(r); });
+    }
+
+    var title = $("rTitle").value.trim() || "Register of Evacuee Properties";
+    var scope = [];
+    if (t) scope.push("Tehsil: " + t);
+    if (st) scope.push("Status: " + st);
+    scope.push("Entries: " + reportRows.length);
+    scope.push("Printed on: " + today());
+    var meta = scope.join("  |  ");
+
+    $("pTitle").textContent = title;
+    $("sTitle").textContent = title;
+    $("pMeta").textContent = meta;
+    $("sMeta").textContent = meta;
+
+    if (kind === "weekly") buildWeekly();
+    else if (kind === "defaulters") buildDefaulters();
+    else if (kind === "geo") buildGeoReport();
+    else buildRegisterReport();
+
+    $("reportCard").style.display = "block";
+    return reportRows.length;
+  }
+
+  function headRow(cols){
+    return "<tr>" + cols.map(function(c){
+      return typeof c === "string" ? "<th>" + esc(c) + "</th>"
+                                   : '<th class="num">' + esc(c[0]) + "</th>";
+    }).join("") + "</tr>";
+  }
+  function noRows(span, msg){
+    return '<tr><td colspan="' + span + '" class="empty">' + esc(msg) + "</td></tr>";
+  }
+
+  function buildRegisterReport(){
+    var rent = 0, arrears = 0, marla = 0, tagged = 0;
+    reportRows.forEach(function(r){
+      rent += num(r.rent); arrears += arrearsOf(r); marla += totalMarla(r);
+      if (hasGeo(r)) tagged++;
+    });
+    $("repStats").innerHTML = [
+      card("Entries", reportRows.length, ""),
+      card("Total Area", Math.floor(marla/20) + "K " + (marla%20) + "M", "", true),
+      card("Annual Rent Demand", "\u20b9 " + money(rent), "ok", true),
+      card("Arrears Outstanding", "\u20b9 " + money(arrears), arrears > 0 ? "bad" : "ok", true)
+    ].join("");
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Khasra / Survey","Khata","Village",
+      "Tehsil","Nature","Area","Occupant / Allottee","Status","Geo",
+      ["Annual Rent"],["Arrears"],"File No."]);
+    $("repBody").innerHTML = reportRows.length
+      ? reportRows.map(function(r,i){
+          return "<tr><td>" + (i+1) + "</td>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.khasra || "\u2014") + "</td>" +
+            "<td>" + esc(r.khata || "\u2014") + "</td>" +
+            "<td>" + esc(r.village) + "</td>" +
+            "<td>" + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.nature) + "</td>" +
+            "<td>" + esc(areaText(r)) + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+            '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+            "<td>" + (hasGeo(r) ? "Yes" : "No") + "</td>" +
+            '<td class="num">' + (num(r.rent) ? money(r.rent) : "\u2014") + "</td>" +
+            '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "\u2014") + "</td>" +
+            "<td>" + esc(r.fileNo || "\u2014") + "</td></tr>";
+        }).join("")
+      : noRows(14, "No property matches this selection.");
+    $("repFoot").innerHTML = reportRows.length
+      ? '<tr><th colspan="11" style="text-align:right">Total</th>' +
+        '<th class="num">' + money(rent) + "</th>" +
+        '<th class="num">' + money(arrears) + "</th><th></th></tr>"
+      : "";
+  }
+
+  /* Working list for the arrears recovery drive: who owes, how much, and how
+     to reach them. */
+  function buildDefaulters(){
+    var due = 0;
+    reportRows.forEach(function(r){ due += arrearsOf(r); });
+    $("repStats").innerHTML = [
+      card("Defaulters", reportRows.length, reportRows.length ? "bad" : "ok"),
+      card("Total Outstanding", "\u20b9 " + money(due), due > 0 ? "bad" : "ok", true),
+      card("Largest Single Arrear", "\u20b9 " + money(reportRows.length ? arrearsOf(reportRows[0]) : 0), "warn", true),
+      card("Printed", today(), "", true)
+    ].join("");
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Village / Tehsil","Occupant / Allottee",
+      "Father / Husband","Contact","Status",["Annual Rent"],["Last Receipt"],
+      "Rent Paid Upto",["Arrears Due"]]);
+    $("repBody").innerHTML = reportRows.length
+      ? reportRows.map(function(r,i){
+          var last = (r.receipts || []).length ? r.receipts[r.receipts.length - 1] : null;
+          return "<tr><td>" + (i+1) + "</td>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+            "<td>" + esc(r.father || "\u2014") + "</td>" +
+            "<td>" + esc(r.phone || "\u2014") + "</td>" +
+            '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+            '<td class="num">' + (num(r.rent) ? money(r.rent) : "\u2014") + "</td>" +
+            '<td class="num">' + (last ? money(last.amount) + " on " + dateText(last.date) : "None") + "</td>" +
+            "<td>" + esc(dateText(r.paidUpto)) + "</td>" +
+            '<td class="num">' + money(arrearsOf(r)) + "</td></tr>";
+        }).join("")
+      : noRows(11, "No arrears outstanding in this selection.");
+    $("repFoot").innerHTML = reportRows.length
+      ? '<tr><th colspan="10" style="text-align:right">Total outstanding</th>' +
+        '<th class="num">' + money(due) + "</th></tr>"
+      : "";
+  }
+
+  /* What is still to be geo-tagged, which is what the progress return is
+     measured on. */
+  function buildGeoReport(){
+    var all = live().filter(function(r){
+      var t = $("rTehsil").value, st = $("rStatus").value;
+      if (t && r.tehsil !== t) return false;
+      if (st && r.status !== st) return false;
+      return true;
+    });
+    var tagged = all.filter(function(r){ return hasGeo(r); }).length;
+    var pct = all.length ? Math.round(tagged / all.length * 100) : 0;
+    $("repStats").innerHTML = [
+      card("Properties", all.length, ""),
+      card("Geo-tagged", tagged, "ok"),
+      card("Still to tag", all.length - tagged, (all.length - tagged) ? "bad" : "ok"),
+      card("Progress", pct + "%", pct === 100 ? "ok" : "warn")
+    ].join("");
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Khasra / Survey","Village","Tehsil",
+      "Nature","Area","Occupant / Allottee","Status"]);
+    $("repBody").innerHTML = reportRows.length
+      ? reportRows.map(function(r,i){
+          return "<tr><td>" + (i+1) + "</td>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.khasra || "\u2014") + "</td>" +
+            "<td>" + esc(r.village) + "</td>" +
+            "<td>" + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.nature) + "</td>" +
+            "<td>" + esc(areaText(r)) + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+            "<td>" + esc(r.status) + "</td></tr>";
+        }).join("")
+      : noRows(9, "Every property in this selection has been geo-tagged.");
+    $("repFoot").innerHTML = "";
+  }
+
+  /* The return Deputy Custodians are asked to send up weekly. Counts activity
+     in the last seven days rather than the standing position. */
+  function buildWeekly(){
+    var since = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    var all = live(), receipts = 0, collected = 0, inspections = 0, tagged = 0, added = 0;
+    all.forEach(function(r){
+      (r.receipts || []).forEach(function(x){
+        if (String(x.date) >= since) { receipts++; collected += num(x.amount); }
+      });
+      (r.inspections || []).forEach(function(x){ if (String(x.date) >= since) inspections++; });
+      if (r.geoAt && String(r.geoAt).slice(0,10) >= since) tagged++;
+      if (r.createdAt && String(r.createdAt).slice(0,10) >= since) added++;
+    });
+    var due = 0, defaulters = 0, encroached = 0, litigation = 0, totalTagged = 0;
+    all.forEach(function(r){
+      var a = arrearsOf(r);
+      if (a > 0) { due += a; defaulters++; }
+      if (r.status === "Encroached") encroached++;
+      if (r.status === "Under Litigation") litigation++;
+      if (hasGeo(r)) totalTagged++;
+    });
+
+    $("repStats").innerHTML = [
+      card("Receipts This Week", receipts, "ok"),
+      card("Collected This Week", "\u20b9 " + money(collected), "ok", true),
+      card("Inspections This Week", inspections, "info"),
+      card("Newly Geo-tagged", tagged, "info")
+    ].join("");
+
+    $("repHead").innerHTML = headRow(["Item", "Position"]);
+    var line = function(k, v){
+      return "<tr><td>" + esc(k) + '</td><td class="num">' + esc(v) + "</td></tr>";
+    };
+    $("repBody").innerHTML =
+      '<tr><th colspan="2">Week ending ' + esc(today()) + "</th></tr>"
+      + line("Properties newly entered in the register", added)
+      + line("Receipts issued", receipts)
+      + line("Rent collected (\u20b9)", money(collected))
+      + line("Inspections carried out", inspections)
+      + line("Properties geo-tagged this week", tagged)
+      + '<tr><th colspan="2">Standing position</th></tr>'
+      + line("Total properties on the register", all.length)
+      + line("Geo-tagged so far", totalTagged + " of " + all.length)
+      + line("Properties in arrears", defaulters)
+      + line("Total arrears outstanding (\u20b9)", money(due))
+      + line("Properties under unauthorised occupation", encroached)
+      + line("Properties under litigation", litigation);
+    $("repFoot").innerHTML = "";
+    reportRows = all;
+  }
+
+  /* ---------------- Export / Import ---------------- */
+  function download(filename, text, mime){
+    var blob = new Blob([text], {type: mime || "application/octet-stream"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  }
+  function stamp(){
+    var d = new Date(), p = function(x){ return (x<10?"0":"") + x; };
+    return d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes());
+  }
+  var CSV_COLS = [
+    ["pid","Property ID"],["khasra","Khasra/Survey No"],["khata","Khata No"],["fileNo","File No"],
+    ["village","Village"],["tehsil","Tehsil"],["niabat","Niabat/Patwar Halqa"],
+    ["nature","Nature"],["kanal","Kanal"],["marla","Marla"],["origOwner","Original Owner"],
+    ["status","Status"],["occupant","Occupant/Allottee"],["father","Father/Husband Name"],
+    ["address","Address"],["phone","Contact"],["allotDate","Allotment Date"],["expiry","Lease Valid Upto"],
+    ["rent","Annual Rent"],["paidUpto","Rent Paid Upto"],["openingArrears","Opening Arrears"],
+    ["court","Court/Case"],["remarks","Remarks"],
+    ["lat","Latitude"],["lng","Longitude"],["geoAt","Geo-tagged On"]
+  ];
+  // Worked out from the ledger rather than stored, so they are export-only.
+  var CSV_COMPUTED = [
+    ["Rent Demanded", function(r){ return sumOf(r.demands, "amount"); }],
+    ["Rent Collected", function(r){ return collectedOf(r); }],
+    ["Arrears Outstanding", function(r){ return arrearsOf(r); }],
+    ["Receipts Issued", function(r){ return (r.receipts || []).length; }],
+    ["Last Inspection", function(r){
+        var i = lastInspection(r);
+        return i ? i.date : "";
+      }]
+  ];
+  function csvCell(v){
+    v = v == null ? "" : String(v);
+    return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
+  }
+  function exportCsv(){
+    var shown = live();
+    if (!shown.length) { toast("There are no records to export.", true); return; }
+    var head = CSV_COLS.map(function(c){ return csvCell(c[1]); })
+                 .concat(CSV_COMPUTED.map(function(c){ return csvCell(c[0]); }));
+    var lines = [head.join(",")];
+    sortRows(shown).forEach(function(r){
+      var row = CSV_COLS.map(function(c){ return csvCell(r[c[0]]); })
+                  .concat(CSV_COMPUTED.map(function(c){ return csvCell(c[1](r)); }));
+      lines.push(row.join(","));
+    });
+    download("evacuee-property-register-" + stamp() + ".csv",
+             "﻿" + lines.join("\r\n"), "text/csv;charset=utf-8");
+    toast("Exported " + shown.length + " records to CSV.");
+  }
+  function backup(){
+    var payload = {
+      app: "Evacuee Property Register",
+      office: "Deputy Custodian, Baramulla",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      count: records.length,
+      records: records
+    };
+    download("evacuee-register-backup-" + stamp() + ".json",
+             JSON.stringify(payload, null, 2), "application/json");
+    toast("Backup file downloaded (" + records.length + " records).");
+  }
+  function restore(){
+    var f = $("restoreFile").files[0];
+    if (!f) { toast("Please choose a backup file first.", true); return; }
+    var mode = $("restoreMode").value;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var data;
+      try { data = JSON.parse(reader.result); }
+      catch (e) { toast("That file could not be read as a backup file.", true); return; }
+      var incoming = Array.isArray(data) ? data : (data && Array.isArray(data.records) ? data.records : null);
+      if (!incoming) { toast("No records found inside that file.", true); return; }
+
+      if (mode === "replace") {
+        if (!confirm("Replace all " + records.length + " existing record(s) with the " +
+                     incoming.length + " record(s) from this file?\n\nThis cannot be undone.")) return;
+        records = incoming.map(normalise);
+        toast("Restored " + records.length + " records.");
+      } else {
+        var seen = {}, added = 0;
+        records.forEach(function(r){ seen[r.id] = 1; seen["pid:" + r.pid] = 1; });
+        incoming.forEach(function(raw){
+          var r = normalise(raw);
+          if (seen[r.id] || seen["pid:" + r.pid]) return;
+          records.push(r); seen[r.id] = 1; seen["pid:" + r.pid] = 1; added++;
+        });
+        toast(added + " record(s) added. " + (incoming.length - added) + " skipped as duplicates.");
+      }
+      $("restoreFile").value = "";
+      save(); refreshTehsilOptions(); renderAll();
+    };
+    reader.onerror = function(){ toast("The file could not be opened.", true); };
+    reader.readAsText(f);
+  }
+  function normalise(raw){
+    var r = {};
+    CSV_COLS.forEach(function(c){ r[c[0]] = raw[c[0]] == null ? "" : raw[c[0]]; });
+    ["kanal","marla","rent","openingArrears"].forEach(function(k){ r[k] = num(r[k]); });
+    r.id = raw.id || uid();
+    r.pid = raw.pid || nextPid();
+    r.village = r.village || "—";
+    r.tehsil = r.tehsil || "—";
+    r.nature = r.nature || "Other";
+    r.status = r.status || "Vacant";
+    r.createdAt = raw.createdAt || new Date().toISOString();
+    r.updatedAt = raw.updatedAt || r.createdAt;
+    if (raw.deleted) {
+      r.deleted = true;
+      r.deletedAt = raw.deletedAt || r.updatedAt;
+    }
+    if (raw.geoAt) r.geoAt = raw.geoAt;
+    if (raw.geoAcc) r.geoAcc = num(raw.geoAcc);
+    ["demands","receipts","inspections"].forEach(function(k){
+      r[k] = Array.isArray(raw[k]) ? raw[k] : [];
+    });
+    migrate(r);
+    return r;
+  }
+
+  /* ---------------- Sample data ---------------- */
+  function demo(){
+    if (live().length && !confirm("This will add 6 sample records for practice. Continue?")) return;
+    var samples = [
+      {khasra:"412/3",khata:"87",fileNo:"DC/BLA/EP/2019/044",village:"Sheeri",tehsil:"Boniyar",
+       niabat:"Sheeri",nature:"Agricultural Land",kanal:6,marla:12,origOwner:"Ghulam Nabi Shah",
+       status:"Allotted",occupant:"Abdul Rashid Khan",father:"Mohammad Sultan Khan",
+       address:"Sheeri, Baramulla",phone:"9419-XXXXXX",allotDate:"2019-04-15",expiry:"",
+       rent:4800,paidUpto:"2025-03-31",arrears:0,court:"",remarks:"Rent paid regularly."},
+      {khasra:"118",khata:"21",fileNo:"DC/BLA/EP/2021/112",village:"Khawaja Bagh",tehsil:"Baramulla",
+       niabat:"Baramulla",nature:"Shop / Commercial",kanal:0,marla:3,origOwner:"Sardar Puran Singh",
+       status:"Under Lease",occupant:"Bashir Ahmad Bhat",father:"Ali Mohammad Bhat",
+       address:"Old Town, Baramulla",phone:"9906-XXXXXX",allotDate:"2021-07-01",expiry:"2026-06-30",
+       rent:36000,paidUpto:"2024-09-30",arrears:33000,court:"",remarks:"Notice for arrears issued."},
+      {khasra:"77/1",khata:"9",fileNo:"DC/BLA/EP/2018/210",village:"Zaingeer",tehsil:"Zaingeer",
+       niabat:"Zaingeer",nature:"Orchard",kanal:11,marla:0,origOwner:"Kirpa Ram",
+       status:"Under Litigation",occupant:"Disputed",father:"",address:"",phone:"",
+       allotDate:"",expiry:"",rent:0,paidUpto:"",arrears:0,
+       court:"Civil Court Sopore, Case No. 214/2022",remarks:"Next hearing awaited."},
+      {khasra:"305",khata:"56",fileNo:"DC/BLA/EP/2023/018",village:"Doabgah",tehsil:"Sopore",
+       niabat:"Doabgah",nature:"Residential House",kanal:1,marla:8,origOwner:"Amar Nath Kaul",
+       status:"Vacant",occupant:"",father:"",address:"",phone:"",allotDate:"",expiry:"",
+       rent:0,paidUpto:"",arrears:0,court:"",remarks:"Structure needs repair. Inspection pending."},
+      {khasra:"640/2",khata:"133",fileNo:"DC/BLA/EP/2020/077",village:"Palhallan",tehsil:"Pattan",
+       niabat:"Palhallan",nature:"Plot / Land",kanal:2,marla:15,origOwner:"Dina Nath",
+       status:"Encroached",occupant:"Unauthorised occupation",father:"",address:"",phone:"",
+       allotDate:"",expiry:"",rent:0,paidUpto:"",arrears:0,court:"",
+       remarks:"Unauthorised occupation. Proceedings for eviction under Section 7 initiated."},
+      {khasra:"29",khata:"4",fileNo:"DC/BLA/EP/2022/095",village:"Gingal",tehsil:"Uri",
+       niabat:"Gingal",nature:"Building",kanal:0,marla:16,origOwner:"Roshan Lal",
+       status:"Retrieved",occupant:"Custodian Department",father:"",address:"",phone:"",
+       allotDate:"",expiry:"",rent:0,paidUpto:"",arrears:0,court:"",
+       remarks:"Possession retrieved on 12-08-2023. Available for allotment."}
+    ];
+    samples.forEach(function(s){
+      s.id = uid();
+      s.pid = nextPid();
+      s.createdAt = s.updatedAt = new Date().toISOString();
+      migrate(s);
+      records.push(s);
+    });
+    save(); refreshTehsilOptions(); renderAll();
+    toast("6 sample records loaded.");
+    showTab("register");
+  }
+
+  /* ---------------- Property file: rent ledger and inspections ---------------- */
+  var fileId = null;
+
+  function lastInspection(r){
+    var list = (r.inspections || []).slice().sort(function(a, b){
+      return String(a.date) < String(b.date) ? 1 : -1;
+    });
+    return list.length ? list[0] : null;
+  }
+  function fileRec(){
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].id === fileId) { migrate(records[i]); return records[i]; }
+    }
+    return null;
+  }
+  function touchFile(r){
+    r.updatedAt = new Date().toISOString();
+    save(); renderFile(); renderAll();
+  }
+  function openFile(rec){
+    fileId = rec.id;
+    $("fileTitle").textContent = "Property File \u2014 " + rec.pid
+      + " (" + rec.village + ", " + rec.tehsil + ")";
+    $("dDate").value = $("pDate").value = $("iDate").value = isoToday();
+    $("dPeriod").value = $("dAmount").value = "";
+    $("pNo").value = $("pAmount").value = "";
+    $("iBy").value = $("iFind").value = "";
+    renderFile();
+    $("fileOverlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeFile(){
+    $("fileOverlay").classList.remove("open");
+    document.body.style.overflow = "";
+    fileId = null;
+  }
+  function isoToday(){
+    var d = new Date(), p = function(x){ return (x < 10 ? "0" : "") + x; };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
+
+  function renderFile(){
+    var r = fileRec();
+    if (!r) return;
+    var demanded = sumOf(r.demands, "amount"),
+        collected = collectedOf(r),
+        due = arrearsOf(r);
+    $("fileStats").innerHTML = [
+      card("Opening Arrears", "\u20b9 " + money(r.openingArrears), "", true),
+      card("Demanded", "\u20b9 " + money(demanded), "info", true),
+      card("Collected", "\u20b9 " + money(collected), "ok", true),
+      card("Now Outstanding", "\u20b9 " + money(due), due > 0 ? "bad" : "ok", true)
+    ].join("");
+
+    $("demandBody").innerHTML = (r.demands || []).length
+      ? r.demands.map(function(d){
+          return "<tr><td>" + esc(d.period || "\u2014") + "</td><td>" + esc(dateText(d.date)) +
+            '</td><td class="num">' + money(d.amount) + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rmdemand="'
+              + esc(d.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="4" class="empty">No demand raised yet.</td></tr>';
+
+    $("receiptBody").innerHTML = (r.receipts || []).length
+      ? r.receipts.map(function(x){
+          return "<tr><td>" + esc(x.no || "\u2014") + "</td><td>" + esc(dateText(x.date)) +
+            "</td><td>" + esc(x.mode || "\u2014") + '</td><td class="num">' + money(x.amount) + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rmreceipt="'
+              + esc(x.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="5" class="empty">No receipt issued yet.</td></tr>';
+
+    $("inspBody").innerHTML = (r.inspections || []).length
+      ? r.inspections.map(function(x){
+          return "<tr><td>" + esc(dateText(x.date)) + "</td><td>" + esc(x.by || "\u2014") +
+            "</td><td>" + esc(x.condition || "\u2014") + "</td><td>" + esc(x.findings || "\u2014") + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rminsp="'
+              + esc(x.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="5" class="empty">No inspection recorded yet.</td></tr>';
+  }
+
+  function wireFile(){
+    $("fileClose").addEventListener("click", closeFile);
+    $("fileDone").addEventListener("click", closeFile);
+    $("fileOverlay").addEventListener("mousedown", function(e){
+      if (e.target === $("fileOverlay")) closeFile();
+    });
+
+    $("btnAddDemand").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      var amt = num($("dAmount").value);
+      if (amt <= 0) { toast("Enter the amount demanded.", true); return; }
+      r.demands.push({ id: uid(), period: $("dPeriod").value.trim(),
+                       date: $("dDate").value || isoToday(), amount: amt });
+      r.demands.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("dPeriod").value = ""; $("dAmount").value = "";
+      touchFile(r);
+      toast("Demand of \u20b9 " + money(amt) + " recorded.");
+    });
+
+    $("btnAddReceipt").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      var amt = num($("pAmount").value);
+      if (amt <= 0) { toast("Enter the amount received.", true); return; }
+      r.receipts.push({ id: uid(), no: $("pNo").value.trim(),
+                        date: $("pDate").value || isoToday(),
+                        mode: $("pMode").value, amount: amt });
+      r.receipts.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("pNo").value = ""; $("pAmount").value = "";
+      touchFile(r);
+      toast("Receipt of \u20b9 " + money(amt) + " recorded.");
+    });
+
+    $("btnAddInsp").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      r.inspections.push({ id: uid(), date: $("iDate").value || isoToday(),
+                           by: $("iBy").value.trim(), condition: $("iCond").value,
+                           findings: $("iFind").value.trim() });
+      r.inspections.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("iBy").value = ""; $("iFind").value = "";
+      touchFile(r);
+      toast("Inspection recorded.");
+    });
+
+    $("fileOverlay").addEventListener("click", function(e){
+      var r = fileRec(); if (!r) return;
+      var b, k;
+      if ((b = up(e.target, "button[data-rmdemand]"))) { k = "demands"; }
+      else if ((b = up(e.target, "button[data-rmreceipt]"))) { k = "receipts"; }
+      else if ((b = up(e.target, "button[data-rminsp]"))) { k = "inspections"; }
+      else return;
+      var id = b.getAttribute("data-rmdemand") || b.getAttribute("data-rmreceipt")
+             || b.getAttribute("data-rminsp");
+      if (!confirm("Remove this entry?")) return;
+      r[k] = r[k].filter(function(x){ return x.id !== id; });
+      touchFile(r);
+    });
+  }
+
+  /* ---------------- Geo-tagging ---------------- */
+  function captureGeo(){
+    var hint = $("geoHint");
+    hint.textContent = "Finding the location\u2026";
+
+    var apply = function(lat, lng, acc){
+      $("fLat").value = num(lat).toFixed(6);
+      $("fLng").value = num(lng).toFixed(6);
+      pendingGeo = { at: new Date().toISOString(), acc: num(acc) };
+      hint.textContent = "Location captured, accurate to about "
+        + Math.round(num(acc)) + " m. Save the property to keep it.";
+    };
+    var failed = function(why){
+      hint.textContent = why + " The coordinates can also be typed in by hand.";
+    };
+
+    if (window.AndroidBridge && typeof window.AndroidBridge.locate === "function") {
+      window.__onLocation = function(lat, lng, acc, err){
+        if (err) return failed(err);
+        apply(lat, lng, acc);
+      };
+      try { window.AndroidBridge.locate(); }
+      catch (e) { failed("The location could not be read."); }
+      return;
+    }
+    if (!navigator.geolocation) {
+      failed("This device cannot report its location.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(pos){ apply(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy); },
+      function(){ failed("The location could not be read \u2014 permission may be off."); },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+    );
+  }
+
+  /* ---------------- Cloud sync ----------------
+     One JSON file, held wherever the office already keeps shared files. Each
+     device merges that file with its own copy and writes the result back, so
+     there is no server to run, no account to create and no subscription. The
+     sync file has exactly the same shape as a backup file, so either can stand
+     in for the other. */
+  var SYNC_META = "dc_baramulla_sync_meta_v1";
+  var fileHandle = null;          // desktop File System Access handle
+  var syncMeta = { name: "", lastSync: "" };
+  var syncTimer = null, syncing = false;
+
+  function onAndroid(){
+    return !!(window.AndroidBridge && typeof window.AndroidBridge.readSync === "function");
+  }
+  function onDesktop(){ return typeof window.showOpenFilePicker === "function"; }
+  function syncPossible(){ return onAndroid() || onDesktop(); }
+  function syncReady(){ return onAndroid() ? !!syncMeta.name : !!fileHandle; }
+
+  function loadSyncMeta(){
+    try {
+      var raw = localStorage.getItem(SYNC_META);
+      if (raw) syncMeta = JSON.parse(raw);
+    } catch (e) { syncMeta = { name: "", lastSync: "" }; }
+    if (!syncMeta || typeof syncMeta !== "object") syncMeta = { name: "", lastSync: "" };
+  }
+  function saveSyncMeta(){
+    try { localStorage.setItem(SYNC_META, JSON.stringify(syncMeta)); } catch (e) { }
+  }
+
+  /* -- desktop: remember the chosen file across sessions -- */
+  function withIdb(cb){
+    try {
+      var req = indexedDB.open("dc_baramulla_sync", 1);
+      req.onupgradeneeded = function(){ req.result.createObjectStore("h"); };
+      req.onsuccess = function(){ cb(req.result); };
+      req.onerror = function(){ cb(null); };
+    } catch (e) { cb(null); }
+  }
+  function rememberHandle(h){
+    withIdb(function(db){
+      if (!db) return;
+      try { db.transaction("h", "readwrite").objectStore("h").put(h, "file"); } catch (e) { }
+    });
+  }
+  function recallHandle(cb){
+    withIdb(function(db){
+      if (!db) return cb(null);
+      try {
+        var r = db.transaction("h", "readonly").objectStore("h").get("file");
+        r.onsuccess = function(){ cb(r.result || null); };
+        r.onerror = function(){ cb(null); };
+      } catch (e) { cb(null); }
+    });
+  }
+  // Chrome re-asks for permission on a stored handle after a restart.
+  function ensurePermission(cb){
+    if (!fileHandle || !fileHandle.queryPermission) return cb(true);
+    fileHandle.queryPermission({ mode: "readwrite" }).then(function(state){
+      if (state === "granted") return cb(true);
+      return fileHandle.requestPermission({ mode: "readwrite" }).then(function(s){
+        cb(s === "granted");
+      });
+    }).catch(function(){ cb(false); });
+  }
+
+  /* -- read / write the sync file, whichever platform we are on -- */
+  function readRemote(cb){
+    if (onAndroid()) {
+      var text;
+      try { text = window.AndroidBridge.readSync(); }
+      catch (e) { return cb(null, "The sync file could not be opened."); }
+      return cb(text == null ? "" : text, null);
+    }
+    if (!fileHandle) return cb(null, "No sync file has been chosen yet.");
+    fileHandle.getFile()
+      .then(function(f){ return f.text(); })
+      .then(function(t){ cb(t, null); })
+      .catch(function(){ cb(null, "The sync file could not be opened."); });
+  }
+  function writeRemote(text, cb){
+    if (onAndroid()) {
+      var ok = false;
+      try { ok = window.AndroidBridge.writeSync(text); } catch (e) { ok = false; }
+      return cb(!!ok, ok ? null : "The sync file could not be written to.");
+    }
+    if (!fileHandle) return cb(false, "No sync file has been chosen yet.");
+    fileHandle.createWritable()
+      .then(function(w){
+        return w.write(text).then(function(){ return w.close(); });
+      })
+      .then(function(){ cb(true, null); })
+      .catch(function(){ cb(false, "The sync file could not be written to."); });
+  }
+
+  /* -- the merge itself --
+     Records are matched on their permanent id. Whichever copy was edited last
+     wins. Tombstones take part like any other record, so a property deleted on
+     one device does not come back from the other. */
+  /* Union of two lists of ledger entries, matched on entry id. */
+  function unionById(a, b){
+    var seen = {}, out = [];
+    (a || []).concat(b || []).forEach(function(x){
+      if (!x || !x.id || seen[x.id]) return;
+      seen[x.id] = 1; out.push(x);
+    });
+    out.sort(function(p, q){ return String(p.date) < String(q.date) ? -1 : 1; });
+    return out;
+  }
+  function mergeRecords(mine, theirs){
+    var byId = {}, stats = { added: 0, updated: 0, kept: 0 };
+    mine.forEach(function(r){ byId[r.id] = r; });
+    theirs.forEach(function(raw){
+      var r;
+      try { r = normalise(raw); } catch (e) { return; }
+      var have = byId[r.id];
+      if (!have) { byId[r.id] = r; stats.added++; return; }
+      var newer = String(r.updatedAt || "") > String(have.updatedAt || "");
+      var winner = newer ? r : have, loser = newer ? have : r;
+      ["demands","receipts","inspections"].forEach(function(k){
+        winner[k] = unionById(winner[k], loser[k]);
+      });
+      byId[r.id] = winner;
+      if (newer) stats.updated++; else stats.kept++;
+    });
+    var out = [];
+    for (var k in byId) if (byId.hasOwnProperty(k)) out.push(byId[k]);
+    return { records: out, stats: stats };
+  }
+
+  /* Two devices adding a property while apart both reach for the same next
+     number. Both survive the merge on their ids, so the later one is renumbered
+     — by creation time, so each device arrives at the same answer. */
+  function dedupePids(rows){
+    var taken = {}, renumbered = 0;
+    var order = rows.slice().sort(function(a, b){
+      var x = String(a.createdAt || "") + a.id, y = String(b.createdAt || "") + b.id;
+      return x < y ? -1 : (x > y ? 1 : 0);
+    });
+    var highest = 0;
+    order.forEach(function(r){
+      var m = /(\d+)\s*$/.exec(r.pid || "");
+      if (m) { var v = parseInt(m[1], 10); if (v > highest) highest = v; }
+    });
+    order.forEach(function(r){
+      if (r.deleted) return;
+      if (taken[r.pid]) {
+        highest++;
+        var digits = String(highest);
+        while (digits.length < 4) digits = "0" + digits;
+        r.pid = "EP/BLA/" + digits;
+        r.updatedAt = new Date().toISOString();
+        renumbered++;
+      }
+      taken[r.pid] = 1;
+    });
+    return renumbered;
+  }
+
+  function syncPayload(){
+    return JSON.stringify({
+      app: "Evacuee Property Register",
+      office: "Deputy Custodian, Baramulla",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      count: live().length,
+      records: records
+    }, null, 2);
+  }
+
+  function doSync(quiet){
+    if (syncing) return;
+    if (!syncReady()) { if (!quiet) toast("Choose a sync file first.", true); return; }
+    syncing = true;
+    $("syncStatus").textContent = "Syncing\u2026";
+
+    var run = function(allowed){
+      if (!allowed) {
+        syncing = false; renderSync();
+        if (!quiet) toast("Permission to use the sync file was refused.", true);
+        return;
+      }
+      readRemote(function(text, err){
+        if (err) {
+          syncing = false; renderSync();
+          if (!quiet) toast(err, true);
+          return;
+        }
+        var theirs = [];
+        if (text && text.replace(/\s/g, "")) {
+          try {
+            var data = JSON.parse(text);
+            theirs = Array.isArray(data) ? data
+                   : (data && Array.isArray(data.records) ? data.records : []);
+          } catch (e) {
+            syncing = false; renderSync();
+            if (!quiet) toast("The sync file is not readable. It may be mid-upload \u2014 try again.", true);
+            return;
+          }
+        }
+        var result = mergeRecords(records, theirs);
+        var renumbered = dedupePids(result.records);
+        records = result.records;
+        save(true);
+        refreshTehsilOptions();
+        renderAll();
+
+        writeRemote(syncPayload(), function(ok, werr){
+          syncing = false;
+          if (ok) {
+            syncMeta.lastSync = new Date().toISOString();
+            saveSyncMeta();
+          }
+          renderSync();
+          if (quiet) return;
+          if (!ok) { toast(werr, true); return; }
+          var bits = [];
+          if (result.stats.added) bits.push(result.stats.added + " brought in");
+          if (result.stats.updated) bits.push(result.stats.updated + " updated");
+          if (renumbered) bits.push(renumbered + " renumbered");
+          toast(bits.length ? "Synced \u2014 " + bits.join(", ") + "." : "Synced. Already up to date.");
+        });
+      });
+    };
+
+    if (onAndroid()) run(true); else ensurePermission(run);
+  }
+
+  function scheduleSync(){
+    if (!syncReady() || syncing) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function(){ doSync(true); }, 8000);
+  }
+
+  function chooseSyncFile(existing){
+    if (onAndroid()) {
+      try {
+        if (existing) window.AndroidBridge.chooseSyncFile();
+        else window.AndroidBridge.createSyncFile("evacuee-register-sync.json");
+      } catch (e) { toast("The file picker could not be opened.", true); }
+      return;
+    }
+    var opts = {
+      types: [{ description: "Register sync file", accept: { "application/json": [".json"] } }]
+    };
+    var picked;
+    if (existing) {
+      opts.multiple = false;
+      picked = window.showOpenFilePicker(opts).then(function(hs){ return hs[0]; });
+    } else {
+      opts.suggestedName = "evacuee-register-sync.json";
+      picked = window.showSaveFilePicker(opts);
+    }
+    picked.then(function(h){
+      fileHandle = h;
+      rememberHandle(h);
+      syncMeta.name = h.name;
+      saveSyncMeta();
+      renderSync();
+      doSync(false);
+    }).catch(function(){ /* the clerk cancelled the picker */ });
+  }
+
+  function stopSync(){
+    if (!confirm("Stop syncing?\n\nRecords already on this device stay exactly as they are.")) return;
+    fileHandle = null;
+    syncMeta = { name: "", lastSync: "" };
+    saveSyncMeta();
+    rememberHandle(null);
+    if (onAndroid()) { try { window.AndroidBridge.forgetSync(); } catch (e) { } }
+    renderSync();
+    toast("Syncing stopped.");
+  }
+
+  // Android calls this once the clerk has picked a file in the system picker.
+  window.onSyncFileChosen = function(name){
+    syncMeta.name = name || "sync file";
+    saveSyncMeta();
+    renderSync();
+    doSync(false);
+  };
+
+  function renderSync(){
+    var status = $("syncStatus"), buttons = $("syncButtons"), hint = $("syncHint");
+    if (!syncPossible()) {
+      status.textContent = "Not available in this browser.";
+      buttons.innerHTML = "";
+      hint.textContent = "This browser cannot hold on to a sync file. Chrome or Edge on the "
+        + "office computer can, and so can the Android app. Backup and Restore below work "
+        + "everywhere in the meantime.";
+      return;
+    }
+    if (!syncReady()) {
+      status.textContent = "Not set up yet.";
+      buttons.innerHTML =
+        '<button class="btn" id="btnSyncNew">Create Sync File</button>'
+      + '<button class="btn ghost" id="btnSyncOpen">Use Existing Sync File</button>';
+      hint.textContent = "On the first device choose Create Sync File and save it inside the "
+        + "cloud folder. On every other device choose Use Existing Sync File and pick that same file.";
+    } else {
+      var when = syncMeta.lastSync ? new Date(syncMeta.lastSync) : null;
+      status.textContent = "Syncing with " + syncMeta.name
+        + (when ? " \u2014 last synced " + when.toLocaleString() : " \u2014 not synced yet");
+      buttons.innerHTML =
+        '<button class="btn" id="btnSyncNow">Sync Now</button>'
+      + '<button class="btn ghost" id="btnSyncStop">Stop Syncing</button>';
+      hint.textContent = "The register also syncs by itself a few seconds after any change, and "
+        + "when it is opened.";
+    }
+    var b;
+    if ((b = $("btnSyncNew"))) b.onclick = function(){ chooseSyncFile(false); };
+    if ((b = $("btnSyncOpen"))) b.onclick = function(){ chooseSyncFile(true); };
+    if ((b = $("btnSyncNow"))) b.onclick = function(){ doSync(false); };
+    if ((b = $("btnSyncStop"))) b.onclick = stopSync;
+  }
+
+  /* ---------------- Deleted records ---------------- */
+  function renderDeleted(){
+    var gone = deletedRows();
+    $("deletedCard").style.display = gone.length ? "block" : "none";
+    if (!gone.length) return;
+    gone.sort(function(a, b){ return String(b.deletedAt) < String(a.deletedAt) ? -1 : 1; });
+    $("deletedBody").innerHTML = gone.map(function(r){
+      return "<tr>" +
+        '<td class="pid">' + esc(r.pid) + "</td>" +
+        "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
+        "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+        "<td>" + esc(dateText(String(r.deletedAt || "").slice(0, 10))) + "</td>" +
+        '<td class="no-print"><button class="btn ghost small" data-restore="'
+          + esc(r.id) + '">Restore</button></td>' +
+        "</tr>";
+    }).join("");
+  }
+
+  /* ---------------- Tabs ---------------- */
+  function showTab(name){
+    var btns = document.querySelectorAll("nav.tabs button");
+    for (var i=0;i<btns.length;i++) btns[i].classList.toggle("active", btns[i].dataset.tab === name);
+    var panels = document.querySelectorAll(".panel");
+    for (var j=0;j<panels.length;j++) panels[j].classList.toggle("active", panels[j].id === "tab-" + name);
+    window.scrollTo(0,0);
+  }
+
+  function renderAll(){ renderDashboard(); renderRegister(); renderSync(); renderDeleted(); }
+
+  /* ---------------- Events ---------------- */
+  function wire(){
+    document.querySelector("nav.tabs").addEventListener("click", function(e){
+      var b = up(e.target, "button[data-tab]");
+      if (b) showTab(b.dataset.tab);
+    });
+
+    ["fSearch","fTehsil","fStatus","fNature"].forEach(function(id){
+      $(id).addEventListener("input", renderRegister);
+      $(id).addEventListener("change", renderRegister);
+    });
+
+    each(document.querySelectorAll("#regTable thead th.sortable"), function(th){
+      th.addEventListener("click", function(){
+        var k = th.getAttribute("data-sort");
+        if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = 1; }
+        renderRegister();
+      });
+    });
+
+    $("regBody").addEventListener("click", function(e){
+      var ed = up(e.target, "button[data-edit]");
+      var dl = up(e.target, "button[data-del]");
+      var fl = up(e.target, "button[data-file]");
+      if (fl) {
+        for (var f = 0; f < records.length; f++) {
+          if (records[f].id === fl.getAttribute("data-file")) { openFile(records[f]); return; }
+        }
+      }
+      if (ed) {
+        for (var i=0;i<records.length;i++) if (records[i].id === ed.dataset.edit) { openModal(records[i]); return; }
+      }
+      if (dl) {
+        for (var j=0;j<records.length;j++) if (records[j].id === dl.dataset.del) {
+          var r = records[j];
+          if (confirm("Delete property " + r.pid + " (" + r.village + ", " + r.tehsil + ")?\n\n" +
+                      "It moves to Deleted Records, under Backup & Data, and can be restored "
+                      + "from there.")) {
+            r.deleted = true;
+            r.deletedAt = r.updatedAt = new Date().toISOString();
+            save(); refreshTehsilOptions(); renderAll();
+            toast("Property " + r.pid + " moved to Deleted Records.");
+          }
+          return;
+        }
+      }
+    });
+
+    $("btnGeo").addEventListener("click", captureGeo);
+    wireFile();
+    fillSelect($("pMode"), PAY_MODES, "");
+    fillSelect($("iCond"), CONDITIONS, "");
+
+    $("btnAdd").addEventListener("click", function(){ openModal(null); });
+    $("btnAddEmpty").addEventListener("click", function(){ openModal(null); });
+    $("btnDemoEmpty").addEventListener("click", demo);
+    $("btnClose").addEventListener("click", closeModal);
+    $("btnCancel").addEventListener("click", closeModal);
+    $("propForm").addEventListener("submit", submitForm);
+    $("overlay").addEventListener("mousedown", function(e){ if (e.target === $("overlay")) closeModal(); });
+    document.addEventListener("keydown", function(e){
+      if (e.key !== "Escape") return;
+      if ($("overlay").classList.contains("open")) closeModal();
+      else if ($("fileOverlay").classList.contains("open")) closeFile();
+    });
+
+    $("rType").addEventListener("change", function(){
+      var titles = {
+        register:   "Register of Evacuee Properties",
+        defaulters: "Statement of Rent Defaulters",
+        geo:        "Geo-tagging Progress \u2014 Properties Pending",
+        weekly:     "Weekly Progress Return"
+      };
+      $("rTitle").value = titles[$("rType").value] || titles.register;
+      $("reportCard").style.display = "none";
+    });
+
+    $("btnBuildReport").addEventListener("click", function(){
+      buildReport();
+      toast("Report generated with " + reportRows.length + " entries.");
+    });
+    $("btnPrint").addEventListener("click", function(){
+      if ($("reportCard").style.display === "none") buildReport();
+      var p = $("tab-reports");
+      p.classList.add("print-target");
+      window.print();
+      setTimeout(function(){ p.classList.remove("print-target"); }, 600);
+    });
+
+    $("btnCsv").addEventListener("click", exportCsv);
+    $("btnBackup").addEventListener("click", backup);
+    $("btnRestore").addEventListener("click", restore);
+    $("btnDemo").addEventListener("click", demo);
+
+    $("deletedBody").addEventListener("click", function(e){
+      var rs = up(e.target, "button[data-restore]");
+      if (!rs) return;
+      for (var i = 0; i < records.length; i++) {
+        if (records[i].id === rs.getAttribute("data-restore")) {
+          var r = records[i];
+          delete r.deleted;
+          delete r.deletedAt;
+          r.updatedAt = new Date().toISOString();
+          save(); refreshTehsilOptions(); renderAll();
+          toast("Property " + r.pid + " restored to the register.");
+          return;
+        }
+      }
+    });
+
+    $("btnPurge").addEventListener("click", function(){
+      var gone = deletedRows();
+      if (!gone.length) return;
+      if (!confirm("Permanently remove " + gone.length + " deleted record(s)?\n\n"
+                 + "They can no longer be restored, and a copy still held on another "
+                 + "device could return on the next sync.")) return;
+      records = live();
+      save(); renderAll();
+      toast(gone.length + " record(s) removed permanently.");
+    });
+    $("btnClear").addEventListener("click", function(){
+      var shown = live();
+      if (!shown.length) { toast("The register is already empty.", true); return; }
+      if (!confirm("Delete ALL " + shown.length + " record(s) from this register?\n\n" +
+                   "They move to Deleted Records and can be restored from there. "
+                   + "Take a backup first.")) return;
+      if (!confirm("Please confirm once more: delete every record?")) return;
+      var when = new Date().toISOString();
+      shown.forEach(function(r){ r.deleted = true; r.deletedAt = r.updatedAt = when; });
+      save(); refreshTehsilOptions(); renderAll();
+      toast(shown.length + " record(s) moved to Deleted Records.");
+    });
+
+    window.addEventListener("beforeprint", function(){
+      var active = document.querySelector(".panel.active");
+      if (active && active.id === "tab-reports") active.classList.add("print-target");
+    });
+  }
+
+  /* ---------------- Start ---------------- */
+  load();
+  loadSyncMeta();
+  initSelects();
+  wire();
+  renderAll();
+
+  // Reconnect to the sync file chosen last time, then sync in the background.
+  if (onAndroid()) {
+    var known = "";
+    try { known = window.AndroidBridge.syncFileName() || ""; } catch (e) { known = ""; }
+    syncMeta.name = known;
+    saveSyncMeta();
+    renderSync();
+    if (known) setTimeout(function(){ doSync(true); }, 800);
+  } else if (onDesktop()) {
+    recallHandle(function(h){
+      if (!h) return;
+      fileHandle = h;
+      renderSync();
+      setTimeout(function(){ doSync(true); }, 800);
+    });
+  }
+})();
+</script>
+</body>
+</html>
