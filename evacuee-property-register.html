@@ -300,6 +300,7 @@
           <th class="sortable" data-sort="areaMarla">Area</th>
           <th class="sortable" data-sort="occupant">Occupant / Allottee</th>
           <th class="sortable" data-sort="status">Status</th>
+          <th class="sortable" data-sort="geo">Geo</th>
           <th class="sortable num" data-sort="rent">Annual Rent</th>
           <th class="sortable num" data-sort="arrears">Arrears</th>
           <th class="no-print">Actions</th>
@@ -332,6 +333,15 @@
           <select id="rStatus"><option value="">All statuses</option></select>
         </div>
         <div class="field">
+          <label for="rType">Report</label>
+          <select id="rType">
+            <option value="register">Register of properties</option>
+            <option value="defaulters">Rent defaulters (recovery drive)</option>
+            <option value="geo">Geo-tagging progress</option>
+            <option value="weekly">Weekly progress return</option>
+          </select>
+        </div>
+        <div class="field">
           <label for="rTitle">Report title</label>
           <input id="rTitle" type="text" value="Register of Evacuee Properties" />
         </div>
@@ -353,12 +363,7 @@
       <div class="stats" id="repStats" style="margin-bottom:14px"></div>
       <div class="table-wrap">
         <table>
-          <thead><tr>
-            <th>S. No.</th><th>Property ID</th><th>Khasra / Survey</th><th>Khata</th>
-            <th>Village</th><th>Tehsil</th><th>Nature</th><th>Area</th>
-            <th>Occupant / Allottee</th><th>Status</th>
-            <th class="num">Annual Rent</th><th class="num">Arrears</th><th>File No.</th>
-          </tr></thead>
+          <thead id="repHead"></thead>
           <tbody id="repBody"></tbody>
           <tfoot id="repFoot"></tfoot>
         </table>
@@ -473,6 +478,32 @@
       then <strong>Print / Save as PDF</strong>. The printed page carries the office heading and signature lines,
       and totals are shown at the bottom of the table.</p>
 
+      <div class="section-title">Geo-tagging a property</div>
+      <p>Standing at the property, open it for editing and press <strong>Capture Location</strong>
+      under Geo-tagging. The app reads the coordinates from the phone and shows how accurate the
+      reading is; press <strong>Save Property</strong> to keep it. The register then shows that
+      property as <strong>Tagged</strong>, and <strong>Reports &rarr; Geo-tagging progress</strong>
+      lists whatever is still to be done. Coordinates can also be typed in by hand.</p>
+
+      <div class="section-title">The property file &mdash; rent and inspections</div>
+      <p>Each row in the register has a <strong>File</strong> button. It opens that property's
+      file, holding three things:</p>
+      <p><strong>Rent demanded.</strong> Add each demand as it is raised, with the period it covers.
+      <strong>Receipts issued.</strong> Add every payment with its receipt number, date and mode.
+      <strong>Inspections.</strong> Add the date, the officer, the condition of the property and
+      what was found.</p>
+      <p>Arrears are then worked out by the app &mdash; opening balance, plus everything demanded,
+      less everything received &mdash; so the figure can always be traced back to entries instead of
+      being typed in from memory. Any arrears figure entered before this became the opening balance,
+      so nothing already recorded was lost.</p>
+
+      <div class="section-title">Reports for the office</div>
+      <p><strong>Register of properties</strong> is the full register. <strong>Rent defaulters</strong>
+      lists everyone in arrears, largest first, with their contact details, for a recovery drive.
+      <strong>Geo-tagging progress</strong> shows how many properties are tagged and lists those
+      still pending. <strong>Weekly progress return</strong> summarises the week's receipts,
+      collections, inspections and tagging alongside the standing position.</p>
+
       <div class="section-title">Using it on two devices</div>
       <p>Go to <strong>Backup &amp; Data &rarr; Cloud Sync</strong>. On the first device press
       <strong>Create Sync File</strong> and save it inside the office's cloud folder &mdash; the
@@ -556,6 +587,23 @@
           <div class="field">
             <label for="fNiabat">Niabat / Patwar Halqa</label>
             <input id="fNiabat" type="text" />
+          </div>
+        </div>
+
+        <div class="section-title">Geo-tagging</div>
+        <div class="grid">
+          <div class="field">
+            <label for="fLat">Latitude</label>
+            <input id="fLat" type="text" placeholder="Not tagged" />
+          </div>
+          <div class="field">
+            <label for="fLng">Longitude</label>
+            <input id="fLng" type="text" placeholder="Not tagged" />
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="btn" id="btnGeo" style="width:100%">Capture Location</button>
+            <div class="hint" id="geoHint">Stand at the property and press this.</div>
           </div>
         </div>
 
@@ -648,6 +696,76 @@
   </div>
 </div>
 
+<div class="overlay" id="fileOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="fileTitle">
+    <div class="modal-head">
+      <h2 id="fileTitle">Property File</h2>
+      <button class="x" id="fileClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="stats" id="fileStats"></div>
+
+      <div class="section-title">Rent Demanded</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Period</th><th>Raised on</th><th class="num">Amount (&#8377;)</th><th></th>
+        </tr></thead><tbody id="demandBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="dPeriod">Period</label>
+          <input id="dPeriod" type="text" placeholder="e.g. 2025-26" /></div>
+        <div class="field"><label for="dDate">Raised on</label>
+          <input id="dDate" type="date" /></div>
+        <div class="field"><label for="dAmount">Amount (&#8377;)</label>
+          <input id="dAmount" type="number" min="0" step="1" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddDemand" style="width:100%">Add Demand</button></div>
+      </div>
+
+      <div class="section-title">Receipts Issued</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Receipt No.</th><th>Date</th><th>Mode</th><th class="num">Amount (&#8377;)</th><th></th>
+        </tr></thead><tbody id="receiptBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="pNo">Receipt No.</label>
+          <input id="pNo" type="text" /></div>
+        <div class="field"><label for="pDate">Date</label>
+          <input id="pDate" type="date" /></div>
+        <div class="field"><label for="pMode">Mode</label>
+          <select id="pMode"></select></div>
+        <div class="field"><label for="pAmount">Amount (&#8377;)</label>
+          <input id="pAmount" type="number" min="0" step="1" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddReceipt" style="width:100%">Add Receipt</button></div>
+      </div>
+
+      <div class="section-title">Inspections</div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>Date</th><th>Inspected by</th><th>Condition</th><th>Findings</th><th></th>
+        </tr></thead><tbody id="inspBody"></tbody></table>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="field"><label for="iDate">Date</label>
+          <input id="iDate" type="date" /></div>
+        <div class="field"><label for="iBy">Inspected by</label>
+          <input id="iBy" type="text" placeholder="Field Inspector" /></div>
+        <div class="field"><label for="iCond">Condition</label>
+          <select id="iCond"></select></div>
+        <div class="field"><label for="iFind">Findings</label>
+          <input id="iFind" type="text" /></div>
+        <div class="field"><label>&nbsp;</label>
+          <button type="button" class="btn" id="btnAddInsp" style="width:100%">Add Inspection</button></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="fileDone">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -668,10 +786,14 @@
     {name:"Retrieved",     cls:"b-retrieved"}
   ];
   var STORE = "dc_baramulla_evacuee_register_v1";
+  // Payment modes seen at a district office counter.
+  var PAY_MODES = ["Cash", "Bank challan", "Cheque / DD", "Online transfer"];
+  var CONDITIONS = ["Good", "Needs repair", "Dilapidated", "Under encroachment", "Not traceable"];
 
   /* ---------------- State ---------------- */
   var records = [];
   var sortKey = "pid", sortDir = 1;
+  var pendingGeo = null;
   var reportRows = [];
 
   /* ---------------- Helpers ---------------- */
@@ -726,6 +848,27 @@
     return out.join(" ");
   }
   function totalMarla(r){ return num(r.kanal)*20 + num(r.marla); }
+  function hasGeo(r){ return !!(r.lat && r.lng); }
+  function geoText(r){
+    if (!hasGeo(r)) return "Not tagged";
+    return num(r.lat).toFixed(6) + ", " + num(r.lng).toFixed(6)
+         + (r.geoAcc ? " (\u00b1" + Math.round(num(r.geoAcc)) + " m)" : "")
+         + (r.geoAt ? " on " + dateText(String(r.geoAt).slice(0,10)) : "");
+  }
+
+  /* Rent position. The figure typed in when the property was first entered
+     becomes the opening balance carried forward; everything after it is built
+     from demands raised and receipts issued, so the arrears shown can always
+     be traced back to entries. */
+  function sumOf(list, field){
+    var t = 0;
+    (list || []).forEach(function(x){ t += num(x[field]); });
+    return t;
+  }
+  function arrearsOf(r){
+    return num(r.openingArrears) + sumOf(r.demands, "amount") - sumOf(r.receipts, "amount");
+  }
+  function collectedOf(r){ return sumOf(r.receipts, "amount"); }
   function dateText(d){
     if (!d) return "—";
     var p = String(d).split("-");
@@ -760,6 +903,18 @@
       records = raw ? JSON.parse(raw) : [];
       if (!Array.isArray(records)) records = [];
     } catch (e) { records = []; }
+    records.forEach(migrate);
+  }
+  /* Registers written before the rent ledger existed carry a single typed
+     arrears figure. It becomes the opening balance so nothing is lost. */
+  function migrate(r){
+    if (r.openingArrears === undefined) {
+      r.openingArrears = num(r.arrears);
+    }
+    delete r.arrears;
+    if (!r.demands) r.demands = [];
+    if (!r.receipts) r.receipts = [];
+    if (!r.inspections) r.inspections = [];
   }
   function nextPid(){
     var max = 0;
@@ -831,7 +986,8 @@
       var va, vb;
       if (k === "areaMarla") { va = totalMarla(a); vb = totalMarla(b); }
       else if (k === "rent") { va = num(a.rent); vb = num(b.rent); }
-      else if (k === "arrears") { va = num(a.arrears); vb = num(b.arrears); }
+      else if (k === "arrears") { va = arrearsOf(a); vb = arrearsOf(b); }
+      else if (k === "geo") { va = hasGeo(a) ? 0 : 1; vb = hasGeo(b) ? 0 : 1; }
       else { va = String(a[k] || "").toLowerCase(); vb = String(b[k] || "").toLowerCase(); }
       if (va < vb) return -1 * d;
       if (va > vb) return 1 * d;
@@ -849,7 +1005,7 @@
     document.querySelector("#regTable").style.display = total === 0 ? "none" : "";
 
     if (total && !rows.length) {
-      body.innerHTML = '<tr><td colspan="11" class="empty">' +
+      body.innerHTML = '<tr><td colspan="12" class="empty">' +
         "No property matches the current search or filters.</td></tr>";
       return;
     }
@@ -863,10 +1019,14 @@
         "<td>" + esc(areaText(r)) + "</td>" +
         "<td>" + esc(r.occupant || "—") + "</td>" +
         '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+        "<td>" + (hasGeo(r)
+            ? '<span class="badge b-allotted" title="' + esc(geoText(r)) + '">Tagged</span>'
+            : '<span class="badge b-vacant">Not tagged</span>') + "</td>" +
         '<td class="num">' + (num(r.rent) ? money(r.rent) : "—") + "</td>" +
-        '<td class="num">' + (num(r.arrears) ? money(r.arrears) : "—") + "</td>" +
+        '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "—") + "</td>" +
         '<td class="actions no-print">' +
           '<button class="btn ghost small" data-edit="' + esc(r.id) + '">Edit</button> ' +
+          '<button class="btn ghost small" data-file="' + esc(r.id) + '">File</button> ' +
           '<button class="btn danger small" data-del="' + esc(r.id) + '">Delete</button>' +
         "</td></tr>";
     }).join("");
@@ -876,9 +1036,12 @@
   function renderDashboard(){
     var totalRent = 0, totalArrears = 0, marla = 0, counts = {}, tehsils = {};
     var shown = live();
+    var tagged = 0, collected = 0;
     shown.forEach(function(r){
       totalRent += num(r.rent);
-      totalArrears += num(r.arrears);
+      totalArrears += arrearsOf(r);
+      if (hasGeo(r)) tagged++;
+      collected += collectedOf(r);
       marla += totalMarla(r);
       counts[r.status] = (counts[r.status] || 0) + 1;
       tehsils[r.tehsil] = (tehsils[r.tehsil] || 0) + 1;
@@ -893,7 +1056,10 @@
       card("Encroached", counts["Encroached"] || 0, "bad"),
       card("Total Area", kanal + "K " + rem + "M", "", true),
       card("Annual Rent Demand", "₹ " + money(totalRent), "ok", true),
-      card("Arrears Outstanding", "₹ " + money(totalArrears), totalArrears > 0 ? "bad" : "ok", true)
+      card("Arrears Outstanding", "₹ " + money(totalArrears), totalArrears > 0 ? "bad" : "ok", true),
+      card("Geo-tagged", tagged + " of " + shown.length,
+           (shown.length && tagged === shown.length) ? "ok" : "warn"),
+      card("Rent Collected", "₹ " + money(collected), "ok", true)
     ].join("");
 
     $("dashUpdated").textContent =
@@ -908,8 +1074,8 @@
       || '<p class="hint">No records yet.</p>';
 
     var attention = shown.filter(function(r){
-      return num(r.arrears) > 0 || r.status === "Under Litigation" || r.status === "Encroached";
-    }).sort(function(a,b){ return num(b.arrears) - num(a.arrears); });
+      return arrearsOf(r) > 0 || r.status === "Under Litigation" || r.status === "Encroached";
+    }).sort(function(a,b){ return arrearsOf(b) - arrearsOf(a); });
 
     $("attentionBody").innerHTML = attention.length
       ? attention.map(function(r){
@@ -918,7 +1084,7 @@
             "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
             "<td>" + esc(r.occupant || "—") + "</td>" +
             '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
-            '<td class="num">' + (num(r.arrears) ? money(r.arrears) : "—") + "</td></tr>";
+            '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "—") + "</td></tr>";
         }).join("")
       : '<tr><td colspan="5" class="empty">Nothing pending. No arrears, litigation or encroachment recorded.</td></tr>';
   }
@@ -944,9 +1110,13 @@
     fNatureIn:"nature", fKanal:"kanal", fMarla:"marla", fOrigOwner:"origOwner",
     fStatusIn:"status", fOccupant:"occupant", fFather:"father", fAddress:"address",
     fPhone:"phone", fAllotDate:"allotDate", fExpiry:"expiry",
-    fRent:"rent", fPaidUpto:"paidUpto", fArrears:"arrears",
-    fCourt:"court", fRemarks:"remarks"
+    fRent:"rent", fPaidUpto:"paidUpto", fArrears:"openingArrears",
+    fCourt:"court", fRemarks:"remarks",
+    fLat:"lat", fLng:"lng"
   };
+  // Held on the record but not typed into the form; they must survive an edit.
+  var KEPT = ["geoAt","geoAcc","demands","receipts","inspections",
+              "deleted","deletedAt","createdAt"];
   function openModal(rec){
     $("modalTitle").textContent = rec ? "Edit Property — " + rec.pid : "Add Property";
     $("fId").value = rec ? rec.id : "";
@@ -958,6 +1128,10 @@
       $("fStatusIn").value = "Allotted";
       $("fNatureIn").value = NATURES[0];
     }
+    pendingGeo = null;
+    $("geoHint").textContent = rec && hasGeo(rec)
+      ? "Tagged " + geoText(rec) + ". Press to re-tag."
+      : "Stand at the property and press this.";
     $("overlay").classList.add("open");
     document.body.style.overflow = "hidden";
     setTimeout(function(){ $("fVillage").focus(); }, 40);
@@ -971,20 +1145,35 @@
     var marla = num($("fMarla").value);
     if (marla > 19) { toast("Marla must be between 0 and 19. Use the kanal box for whole kanals.", true); return; }
 
-    var id = $("fId").value, rec = {};
+    var id = $("fId").value, existing = null, i;
+    if (id) {
+      for (i = 0; i < records.length; i++) {
+        if (records[i].id === id) { existing = records[i]; break; }
+      }
+    }
+    var rec = {};
+    if (existing) {
+      KEPT.forEach(function(k){
+        if (existing[k] !== undefined) rec[k] = existing[k];
+      });
+    }
     for (var el in FIELDS) if (FIELDS.hasOwnProperty(el)) {
       rec[FIELDS[el]] = $(el).value.trim();
     }
-    ["kanal","marla","rent","arrears"].forEach(function(k){ rec[k] = rec[k] === "" ? 0 : num(rec[k]); });
+    ["kanal","marla","rent","openingArrears"].forEach(function(k){
+      rec[k] = rec[k] === "" ? 0 : num(rec[k]);
+    });
+    ["lat","lng"].forEach(function(k){ if (rec[k] === "") delete rec[k]; });
+    if (pendingGeo && rec.lat && rec.lng) {
+      rec.geoAt = pendingGeo.at;
+      rec.geoAcc = pendingGeo.acc;
+    }
+    migrate(rec);
 
-    if (id) {
-      for (var i=0;i<records.length;i++) if (records[i].id === id) {
-        rec.id = id;
-        rec.createdAt = records[i].createdAt;
-        rec.updatedAt = new Date().toISOString();
-        records[i] = rec;
-        break;
-      }
+    if (existing) {
+      rec.id = id;
+      rec.updatedAt = new Date().toISOString();
+      records[i] = rec;
       toast("Property " + rec.pid + " updated.");
     } else {
       rec.id = uid();
@@ -997,18 +1186,25 @@
 
   /* ---------------- Reports ---------------- */
   function buildReport(){
-    var t = $("rTehsil").value, s = $("rStatus").value;
+    var t = $("rTehsil").value, st = $("rStatus").value, kind = $("rType").value;
     reportRows = sortRows(live().filter(function(r){
       if (t && r.tehsil !== t) return false;
-      if (s && r.status !== s) return false;
+      if (st && r.status !== st) return false;
       return true;
     }));
+
+    if (kind === "defaulters") {
+      reportRows = reportRows.filter(function(r){ return arrearsOf(r) > 0; })
+        .sort(function(a, b){ return arrearsOf(b) - arrearsOf(a); });
+    } else if (kind === "geo") {
+      reportRows = reportRows.filter(function(r){ return !hasGeo(r); });
+    }
 
     var title = $("rTitle").value.trim() || "Register of Evacuee Properties";
     var scope = [];
     if (t) scope.push("Tehsil: " + t);
-    if (s) scope.push("Status: " + s);
-    scope.push("Total entries: " + reportRows.length);
+    if (st) scope.push("Status: " + st);
+    scope.push("Entries: " + reportRows.length);
     scope.push("Printed on: " + today());
     var meta = scope.join("  |  ");
 
@@ -1017,44 +1213,185 @@
     $("pMeta").textContent = meta;
     $("sMeta").textContent = meta;
 
-    var rent = 0, arrears = 0, marla = 0;
-    reportRows.forEach(function(r){
-      rent += num(r.rent); arrears += num(r.arrears); marla += totalMarla(r);
-    });
+    if (kind === "weekly") buildWeekly();
+    else if (kind === "defaulters") buildDefaulters();
+    else if (kind === "geo") buildGeoReport();
+    else buildRegisterReport();
 
+    $("reportCard").style.display = "block";
+    return reportRows.length;
+  }
+
+  function headRow(cols){
+    return "<tr>" + cols.map(function(c){
+      return typeof c === "string" ? "<th>" + esc(c) + "</th>"
+                                   : '<th class="num">' + esc(c[0]) + "</th>";
+    }).join("") + "</tr>";
+  }
+  function noRows(span, msg){
+    return '<tr><td colspan="' + span + '" class="empty">' + esc(msg) + "</td></tr>";
+  }
+
+  function buildRegisterReport(){
+    var rent = 0, arrears = 0, marla = 0, tagged = 0;
+    reportRows.forEach(function(r){
+      rent += num(r.rent); arrears += arrearsOf(r); marla += totalMarla(r);
+      if (hasGeo(r)) tagged++;
+    });
     $("repStats").innerHTML = [
       card("Entries", reportRows.length, ""),
       card("Total Area", Math.floor(marla/20) + "K " + (marla%20) + "M", "", true),
-      card("Annual Rent Demand", "₹ " + money(rent), "ok", true),
-      card("Arrears Outstanding", "₹ " + money(arrears), arrears > 0 ? "bad" : "ok", true)
+      card("Annual Rent Demand", "\u20b9 " + money(rent), "ok", true),
+      card("Arrears Outstanding", "\u20b9 " + money(arrears), arrears > 0 ? "bad" : "ok", true)
     ].join("");
-
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Khasra / Survey","Khata","Village",
+      "Tehsil","Nature","Area","Occupant / Allottee","Status","Geo",
+      ["Annual Rent"],["Arrears"],"File No."]);
     $("repBody").innerHTML = reportRows.length
       ? reportRows.map(function(r,i){
           return "<tr><td>" + (i+1) + "</td>" +
             '<td class="pid">' + esc(r.pid) + "</td>" +
-            "<td>" + esc(r.khasra || "—") + "</td>" +
-            "<td>" + esc(r.khata || "—") + "</td>" +
+            "<td>" + esc(r.khasra || "\u2014") + "</td>" +
+            "<td>" + esc(r.khata || "\u2014") + "</td>" +
             "<td>" + esc(r.village) + "</td>" +
             "<td>" + esc(r.tehsil) + "</td>" +
             "<td>" + esc(r.nature) + "</td>" +
             "<td>" + esc(areaText(r)) + "</td>" +
-            "<td>" + esc(r.occupant || "—") + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
             '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
-            '<td class="num">' + (num(r.rent) ? money(r.rent) : "—") + "</td>" +
-            '<td class="num">' + (num(r.arrears) ? money(r.arrears) : "—") + "</td>" +
-            "<td>" + esc(r.fileNo || "—") + "</td></tr>";
+            "<td>" + (hasGeo(r) ? "Yes" : "No") + "</td>" +
+            '<td class="num">' + (num(r.rent) ? money(r.rent) : "\u2014") + "</td>" +
+            '<td class="num">' + (arrearsOf(r) ? money(arrearsOf(r)) : "\u2014") + "</td>" +
+            "<td>" + esc(r.fileNo || "\u2014") + "</td></tr>";
         }).join("")
-      : '<tr><td colspan="13" class="empty">No property matches this selection.</td></tr>';
-
+      : noRows(14, "No property matches this selection.");
     $("repFoot").innerHTML = reportRows.length
-      ? '<tr><th colspan="10" style="text-align:right">Total</th>' +
+      ? '<tr><th colspan="11" style="text-align:right">Total</th>' +
         '<th class="num">' + money(rent) + "</th>" +
         '<th class="num">' + money(arrears) + "</th><th></th></tr>"
       : "";
+  }
 
-    $("reportCard").style.display = "block";
-    return reportRows.length;
+  /* Working list for the arrears recovery drive: who owes, how much, and how
+     to reach them. */
+  function buildDefaulters(){
+    var due = 0;
+    reportRows.forEach(function(r){ due += arrearsOf(r); });
+    $("repStats").innerHTML = [
+      card("Defaulters", reportRows.length, reportRows.length ? "bad" : "ok"),
+      card("Total Outstanding", "\u20b9 " + money(due), due > 0 ? "bad" : "ok", true),
+      card("Largest Single Arrear", "\u20b9 " + money(reportRows.length ? arrearsOf(reportRows[0]) : 0), "warn", true),
+      card("Printed", today(), "", true)
+    ].join("");
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Village / Tehsil","Occupant / Allottee",
+      "Father / Husband","Contact","Status",["Annual Rent"],["Last Receipt"],
+      "Rent Paid Upto",["Arrears Due"]]);
+    $("repBody").innerHTML = reportRows.length
+      ? reportRows.map(function(r,i){
+          var last = (r.receipts || []).length ? r.receipts[r.receipts.length - 1] : null;
+          return "<tr><td>" + (i+1) + "</td>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+            "<td>" + esc(r.father || "\u2014") + "</td>" +
+            "<td>" + esc(r.phone || "\u2014") + "</td>" +
+            '<td><span class="badge ' + statusClass(r.status) + '">' + esc(r.status) + "</span></td>" +
+            '<td class="num">' + (num(r.rent) ? money(r.rent) : "\u2014") + "</td>" +
+            '<td class="num">' + (last ? money(last.amount) + " on " + dateText(last.date) : "None") + "</td>" +
+            "<td>" + esc(dateText(r.paidUpto)) + "</td>" +
+            '<td class="num">' + money(arrearsOf(r)) + "</td></tr>";
+        }).join("")
+      : noRows(11, "No arrears outstanding in this selection.");
+    $("repFoot").innerHTML = reportRows.length
+      ? '<tr><th colspan="10" style="text-align:right">Total outstanding</th>' +
+        '<th class="num">' + money(due) + "</th></tr>"
+      : "";
+  }
+
+  /* What is still to be geo-tagged, which is what the progress return is
+     measured on. */
+  function buildGeoReport(){
+    var all = live().filter(function(r){
+      var t = $("rTehsil").value, st = $("rStatus").value;
+      if (t && r.tehsil !== t) return false;
+      if (st && r.status !== st) return false;
+      return true;
+    });
+    var tagged = all.filter(function(r){ return hasGeo(r); }).length;
+    var pct = all.length ? Math.round(tagged / all.length * 100) : 0;
+    $("repStats").innerHTML = [
+      card("Properties", all.length, ""),
+      card("Geo-tagged", tagged, "ok"),
+      card("Still to tag", all.length - tagged, (all.length - tagged) ? "bad" : "ok"),
+      card("Progress", pct + "%", pct === 100 ? "ok" : "warn")
+    ].join("");
+    $("repHead").innerHTML = headRow(["S. No.","Property ID","Khasra / Survey","Village","Tehsil",
+      "Nature","Area","Occupant / Allottee","Status"]);
+    $("repBody").innerHTML = reportRows.length
+      ? reportRows.map(function(r,i){
+          return "<tr><td>" + (i+1) + "</td>" +
+            '<td class="pid">' + esc(r.pid) + "</td>" +
+            "<td>" + esc(r.khasra || "\u2014") + "</td>" +
+            "<td>" + esc(r.village) + "</td>" +
+            "<td>" + esc(r.tehsil) + "</td>" +
+            "<td>" + esc(r.nature) + "</td>" +
+            "<td>" + esc(areaText(r)) + "</td>" +
+            "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+            "<td>" + esc(r.status) + "</td></tr>";
+        }).join("")
+      : noRows(9, "Every property in this selection has been geo-tagged.");
+    $("repFoot").innerHTML = "";
+  }
+
+  /* The return Deputy Custodians are asked to send up weekly. Counts activity
+     in the last seven days rather than the standing position. */
+  function buildWeekly(){
+    var since = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+    var all = live(), receipts = 0, collected = 0, inspections = 0, tagged = 0, added = 0;
+    all.forEach(function(r){
+      (r.receipts || []).forEach(function(x){
+        if (String(x.date) >= since) { receipts++; collected += num(x.amount); }
+      });
+      (r.inspections || []).forEach(function(x){ if (String(x.date) >= since) inspections++; });
+      if (r.geoAt && String(r.geoAt).slice(0,10) >= since) tagged++;
+      if (r.createdAt && String(r.createdAt).slice(0,10) >= since) added++;
+    });
+    var due = 0, defaulters = 0, encroached = 0, litigation = 0, totalTagged = 0;
+    all.forEach(function(r){
+      var a = arrearsOf(r);
+      if (a > 0) { due += a; defaulters++; }
+      if (r.status === "Encroached") encroached++;
+      if (r.status === "Under Litigation") litigation++;
+      if (hasGeo(r)) totalTagged++;
+    });
+
+    $("repStats").innerHTML = [
+      card("Receipts This Week", receipts, "ok"),
+      card("Collected This Week", "\u20b9 " + money(collected), "ok", true),
+      card("Inspections This Week", inspections, "info"),
+      card("Newly Geo-tagged", tagged, "info")
+    ].join("");
+
+    $("repHead").innerHTML = headRow(["Item", "Position"]);
+    var line = function(k, v){
+      return "<tr><td>" + esc(k) + '</td><td class="num">' + esc(v) + "</td></tr>";
+    };
+    $("repBody").innerHTML =
+      '<tr><th colspan="2">Week ending ' + esc(today()) + "</th></tr>"
+      + line("Properties newly entered in the register", added)
+      + line("Receipts issued", receipts)
+      + line("Rent collected (\u20b9)", money(collected))
+      + line("Inspections carried out", inspections)
+      + line("Properties geo-tagged this week", tagged)
+      + '<tr><th colspan="2">Standing position</th></tr>'
+      + line("Total properties on the register", all.length)
+      + line("Geo-tagged so far", totalTagged + " of " + all.length)
+      + line("Properties in arrears", defaulters)
+      + line("Total arrears outstanding (\u20b9)", money(due))
+      + line("Properties under unauthorised occupation", encroached)
+      + line("Properties under litigation", litigation);
+    $("repFoot").innerHTML = "";
+    reportRows = all;
   }
 
   /* ---------------- Export / Import ---------------- */
@@ -1077,8 +1414,20 @@
     ["nature","Nature"],["kanal","Kanal"],["marla","Marla"],["origOwner","Original Owner"],
     ["status","Status"],["occupant","Occupant/Allottee"],["father","Father/Husband Name"],
     ["address","Address"],["phone","Contact"],["allotDate","Allotment Date"],["expiry","Lease Valid Upto"],
-    ["rent","Annual Rent"],["paidUpto","Rent Paid Upto"],["arrears","Arrears"],
-    ["court","Court/Case"],["remarks","Remarks"]
+    ["rent","Annual Rent"],["paidUpto","Rent Paid Upto"],["openingArrears","Opening Arrears"],
+    ["court","Court/Case"],["remarks","Remarks"],
+    ["lat","Latitude"],["lng","Longitude"],["geoAt","Geo-tagged On"]
+  ];
+  // Worked out from the ledger rather than stored, so they are export-only.
+  var CSV_COMPUTED = [
+    ["Rent Demanded", function(r){ return sumOf(r.demands, "amount"); }],
+    ["Rent Collected", function(r){ return collectedOf(r); }],
+    ["Arrears Outstanding", function(r){ return arrearsOf(r); }],
+    ["Receipts Issued", function(r){ return (r.receipts || []).length; }],
+    ["Last Inspection", function(r){
+        var i = lastInspection(r);
+        return i ? i.date : "";
+      }]
   ];
   function csvCell(v){
     v = v == null ? "" : String(v);
@@ -1087,9 +1436,13 @@
   function exportCsv(){
     var shown = live();
     if (!shown.length) { toast("There are no records to export.", true); return; }
-    var lines = [CSV_COLS.map(function(c){ return csvCell(c[1]); }).join(",")];
+    var head = CSV_COLS.map(function(c){ return csvCell(c[1]); })
+                 .concat(CSV_COMPUTED.map(function(c){ return csvCell(c[0]); }));
+    var lines = [head.join(",")];
     sortRows(shown).forEach(function(r){
-      lines.push(CSV_COLS.map(function(c){ return csvCell(r[c[0]]); }).join(","));
+      var row = CSV_COLS.map(function(c){ return csvCell(r[c[0]]); })
+                  .concat(CSV_COMPUTED.map(function(c){ return csvCell(c[1](r)); }));
+      lines.push(row.join(","));
     });
     download("evacuee-property-register-" + stamp() + ".csv",
              "﻿" + lines.join("\r\n"), "text/csv;charset=utf-8");
@@ -1144,7 +1497,7 @@
   function normalise(raw){
     var r = {};
     CSV_COLS.forEach(function(c){ r[c[0]] = raw[c[0]] == null ? "" : raw[c[0]]; });
-    ["kanal","marla","rent","arrears"].forEach(function(k){ r[k] = num(r[k]); });
+    ["kanal","marla","rent","openingArrears"].forEach(function(k){ r[k] = num(r[k]); });
     r.id = raw.id || uid();
     r.pid = raw.pid || nextPid();
     r.village = r.village || "—";
@@ -1157,6 +1510,12 @@
       r.deleted = true;
       r.deletedAt = raw.deletedAt || r.updatedAt;
     }
+    if (raw.geoAt) r.geoAt = raw.geoAt;
+    if (raw.geoAcc) r.geoAcc = num(raw.geoAcc);
+    ["demands","receipts","inspections"].forEach(function(k){
+      r[k] = Array.isArray(raw[k]) ? raw[k] : [];
+    });
+    migrate(r);
     return r;
   }
 
@@ -1187,7 +1546,7 @@
        niabat:"Palhallan",nature:"Plot / Land",kanal:2,marla:15,origOwner:"Dina Nath",
        status:"Encroached",occupant:"Unauthorised occupation",father:"",address:"",phone:"",
        allotDate:"",expiry:"",rent:0,paidUpto:"",arrears:0,court:"",
-       remarks:"Eviction proceedings initiated under Section 19."},
+       remarks:"Unauthorised occupation. Proceedings for eviction under Section 7 initiated."},
       {khasra:"29",khata:"4",fileNo:"DC/BLA/EP/2022/095",village:"Gingal",tehsil:"Uri",
        niabat:"Gingal",nature:"Building",kanal:0,marla:16,origOwner:"Roshan Lal",
        status:"Retrieved",occupant:"Custodian Department",father:"",address:"",phone:"",
@@ -1198,11 +1557,188 @@
       s.id = uid();
       s.pid = nextPid();
       s.createdAt = s.updatedAt = new Date().toISOString();
+      migrate(s);
       records.push(s);
     });
     save(); refreshTehsilOptions(); renderAll();
     toast("6 sample records loaded.");
     showTab("register");
+  }
+
+  /* ---------------- Property file: rent ledger and inspections ---------------- */
+  var fileId = null;
+
+  function lastInspection(r){
+    var list = (r.inspections || []).slice().sort(function(a, b){
+      return String(a.date) < String(b.date) ? 1 : -1;
+    });
+    return list.length ? list[0] : null;
+  }
+  function fileRec(){
+    for (var i = 0; i < records.length; i++) {
+      if (records[i].id === fileId) { migrate(records[i]); return records[i]; }
+    }
+    return null;
+  }
+  function touchFile(r){
+    r.updatedAt = new Date().toISOString();
+    save(); renderFile(); renderAll();
+  }
+  function openFile(rec){
+    fileId = rec.id;
+    $("fileTitle").textContent = "Property File \u2014 " + rec.pid
+      + " (" + rec.village + ", " + rec.tehsil + ")";
+    $("dDate").value = $("pDate").value = $("iDate").value = isoToday();
+    $("dPeriod").value = $("dAmount").value = "";
+    $("pNo").value = $("pAmount").value = "";
+    $("iBy").value = $("iFind").value = "";
+    renderFile();
+    $("fileOverlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeFile(){
+    $("fileOverlay").classList.remove("open");
+    document.body.style.overflow = "";
+    fileId = null;
+  }
+  function isoToday(){
+    var d = new Date(), p = function(x){ return (x < 10 ? "0" : "") + x; };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+  }
+
+  function renderFile(){
+    var r = fileRec();
+    if (!r) return;
+    var demanded = sumOf(r.demands, "amount"),
+        collected = collectedOf(r),
+        due = arrearsOf(r);
+    $("fileStats").innerHTML = [
+      card("Opening Arrears", "\u20b9 " + money(r.openingArrears), "", true),
+      card("Demanded", "\u20b9 " + money(demanded), "info", true),
+      card("Collected", "\u20b9 " + money(collected), "ok", true),
+      card("Now Outstanding", "\u20b9 " + money(due), due > 0 ? "bad" : "ok", true)
+    ].join("");
+
+    $("demandBody").innerHTML = (r.demands || []).length
+      ? r.demands.map(function(d){
+          return "<tr><td>" + esc(d.period || "\u2014") + "</td><td>" + esc(dateText(d.date)) +
+            '</td><td class="num">' + money(d.amount) + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rmdemand="'
+              + esc(d.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="4" class="empty">No demand raised yet.</td></tr>';
+
+    $("receiptBody").innerHTML = (r.receipts || []).length
+      ? r.receipts.map(function(x){
+          return "<tr><td>" + esc(x.no || "\u2014") + "</td><td>" + esc(dateText(x.date)) +
+            "</td><td>" + esc(x.mode || "\u2014") + '</td><td class="num">' + money(x.amount) + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rmreceipt="'
+              + esc(x.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="5" class="empty">No receipt issued yet.</td></tr>';
+
+    $("inspBody").innerHTML = (r.inspections || []).length
+      ? r.inspections.map(function(x){
+          return "<tr><td>" + esc(dateText(x.date)) + "</td><td>" + esc(x.by || "\u2014") +
+            "</td><td>" + esc(x.condition || "\u2014") + "</td><td>" + esc(x.findings || "\u2014") + "</td>" +
+            '<td class="no-print"><button class="btn danger small" data-rminsp="'
+              + esc(x.id) + '">Remove</button></td></tr>';
+        }).join("")
+      : '<tr><td colspan="5" class="empty">No inspection recorded yet.</td></tr>';
+  }
+
+  function wireFile(){
+    $("fileClose").addEventListener("click", closeFile);
+    $("fileDone").addEventListener("click", closeFile);
+    $("fileOverlay").addEventListener("mousedown", function(e){
+      if (e.target === $("fileOverlay")) closeFile();
+    });
+
+    $("btnAddDemand").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      var amt = num($("dAmount").value);
+      if (amt <= 0) { toast("Enter the amount demanded.", true); return; }
+      r.demands.push({ id: uid(), period: $("dPeriod").value.trim(),
+                       date: $("dDate").value || isoToday(), amount: amt });
+      r.demands.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("dPeriod").value = ""; $("dAmount").value = "";
+      touchFile(r);
+      toast("Demand of \u20b9 " + money(amt) + " recorded.");
+    });
+
+    $("btnAddReceipt").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      var amt = num($("pAmount").value);
+      if (amt <= 0) { toast("Enter the amount received.", true); return; }
+      r.receipts.push({ id: uid(), no: $("pNo").value.trim(),
+                        date: $("pDate").value || isoToday(),
+                        mode: $("pMode").value, amount: amt });
+      r.receipts.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("pNo").value = ""; $("pAmount").value = "";
+      touchFile(r);
+      toast("Receipt of \u20b9 " + money(amt) + " recorded.");
+    });
+
+    $("btnAddInsp").addEventListener("click", function(){
+      var r = fileRec(); if (!r) return;
+      r.inspections.push({ id: uid(), date: $("iDate").value || isoToday(),
+                           by: $("iBy").value.trim(), condition: $("iCond").value,
+                           findings: $("iFind").value.trim() });
+      r.inspections.sort(function(a,b){ return String(a.date) < String(b.date) ? -1 : 1; });
+      $("iBy").value = ""; $("iFind").value = "";
+      touchFile(r);
+      toast("Inspection recorded.");
+    });
+
+    $("fileOverlay").addEventListener("click", function(e){
+      var r = fileRec(); if (!r) return;
+      var b, k;
+      if ((b = up(e.target, "button[data-rmdemand]"))) { k = "demands"; }
+      else if ((b = up(e.target, "button[data-rmreceipt]"))) { k = "receipts"; }
+      else if ((b = up(e.target, "button[data-rminsp]"))) { k = "inspections"; }
+      else return;
+      var id = b.getAttribute("data-rmdemand") || b.getAttribute("data-rmreceipt")
+             || b.getAttribute("data-rminsp");
+      if (!confirm("Remove this entry?")) return;
+      r[k] = r[k].filter(function(x){ return x.id !== id; });
+      touchFile(r);
+    });
+  }
+
+  /* ---------------- Geo-tagging ---------------- */
+  function captureGeo(){
+    var hint = $("geoHint");
+    hint.textContent = "Finding the location\u2026";
+
+    var apply = function(lat, lng, acc){
+      $("fLat").value = num(lat).toFixed(6);
+      $("fLng").value = num(lng).toFixed(6);
+      pendingGeo = { at: new Date().toISOString(), acc: num(acc) };
+      hint.textContent = "Location captured, accurate to about "
+        + Math.round(num(acc)) + " m. Save the property to keep it.";
+    };
+    var failed = function(why){
+      hint.textContent = why + " The coordinates can also be typed in by hand.";
+    };
+
+    if (window.AndroidBridge && typeof window.AndroidBridge.locate === "function") {
+      window.__onLocation = function(lat, lng, acc, err){
+        if (err) return failed(err);
+        apply(lat, lng, acc);
+      };
+      try { window.AndroidBridge.locate(); }
+      catch (e) { failed("The location could not be read."); }
+      return;
+    }
+    if (!navigator.geolocation) {
+      failed("This device cannot report its location.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(pos){ apply(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy); },
+      function(){ failed("The location could not be read \u2014 permission may be off."); },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+    );
   }
 
   /* ---------------- Cloud sync ----------------
@@ -1303,6 +1839,16 @@
      Records are matched on their permanent id. Whichever copy was edited last
      wins. Tombstones take part like any other record, so a property deleted on
      one device does not come back from the other. */
+  /* Union of two lists of ledger entries, matched on entry id. */
+  function unionById(a, b){
+    var seen = {}, out = [];
+    (a || []).concat(b || []).forEach(function(x){
+      if (!x || !x.id || seen[x.id]) return;
+      seen[x.id] = 1; out.push(x);
+    });
+    out.sort(function(p, q){ return String(p.date) < String(q.date) ? -1 : 1; });
+    return out;
+  }
   function mergeRecords(mine, theirs){
     var byId = {}, stats = { added: 0, updated: 0, kept: 0 };
     mine.forEach(function(r){ byId[r.id] = r; });
@@ -1311,11 +1857,13 @@
       try { r = normalise(raw); } catch (e) { return; }
       var have = byId[r.id];
       if (!have) { byId[r.id] = r; stats.added++; return; }
-      if (String(r.updatedAt || "") > String(have.updatedAt || "")) {
-        byId[r.id] = r; stats.updated++;
-      } else {
-        stats.kept++;
-      }
+      var newer = String(r.updatedAt || "") > String(have.updatedAt || "");
+      var winner = newer ? r : have, loser = newer ? have : r;
+      ["demands","receipts","inspections"].forEach(function(k){
+        winner[k] = unionById(winner[k], loser[k]);
+      });
+      byId[r.id] = winner;
+      if (newer) stats.updated++; else stats.kept++;
     });
     var out = [];
     for (var k in byId) if (byId.hasOwnProperty(k)) out.push(byId[k]);
@@ -1560,6 +2108,12 @@
     $("regBody").addEventListener("click", function(e){
       var ed = up(e.target, "button[data-edit]");
       var dl = up(e.target, "button[data-del]");
+      var fl = up(e.target, "button[data-file]");
+      if (fl) {
+        for (var f = 0; f < records.length; f++) {
+          if (records[f].id === fl.getAttribute("data-file")) { openFile(records[f]); return; }
+        }
+      }
       if (ed) {
         for (var i=0;i<records.length;i++) if (records[i].id === ed.dataset.edit) { openModal(records[i]); return; }
       }
@@ -1579,6 +2133,11 @@
       }
     });
 
+    $("btnGeo").addEventListener("click", captureGeo);
+    wireFile();
+    fillSelect($("pMode"), PAY_MODES, "");
+    fillSelect($("iCond"), CONDITIONS, "");
+
     $("btnAdd").addEventListener("click", function(){ openModal(null); });
     $("btnAddEmpty").addEventListener("click", function(){ openModal(null); });
     $("btnDemoEmpty").addEventListener("click", demo);
@@ -1587,7 +2146,20 @@
     $("propForm").addEventListener("submit", submitForm);
     $("overlay").addEventListener("mousedown", function(e){ if (e.target === $("overlay")) closeModal(); });
     document.addEventListener("keydown", function(e){
-      if (e.key === "Escape" && $("overlay").classList.contains("open")) closeModal();
+      if (e.key !== "Escape") return;
+      if ($("overlay").classList.contains("open")) closeModal();
+      else if ($("fileOverlay").classList.contains("open")) closeFile();
+    });
+
+    $("rType").addEventListener("change", function(){
+      var titles = {
+        register:   "Register of Evacuee Properties",
+        defaulters: "Statement of Rent Defaulters",
+        geo:        "Geo-tagging Progress \u2014 Properties Pending",
+        weekly:     "Weekly Progress Return"
+      };
+      $("rTitle").value = titles[$("rType").value] || titles.register;
+      $("reportCard").style.display = "none";
     });
 
     $("btnBuildReport").addEventListener("click", function(){

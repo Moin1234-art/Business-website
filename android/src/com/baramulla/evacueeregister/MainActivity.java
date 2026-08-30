@@ -6,8 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.print.PrintAttributes;
@@ -51,6 +56,7 @@ public class MainActivity extends Activity {
     private static final int REQ_SAVE_FILE = 1002;
     private static final int REQ_SYNC_OPEN = 1003;
     private static final int REQ_SYNC_CREATE = 1004;
+    private static final int REQ_LOCATION = 2001;
 
     private static final String PREFS = "evacuee_register";
     private static final String KEY_SYNC_URI = "sync_uri";
@@ -320,6 +326,16 @@ public class MainActivity extends Activity {
             prefs().edit().remove(KEY_SYNC_URI).commit();
         }
 
+        /** Geo-tags the property the clerk is standing at. */
+        @JavascriptInterface
+        public void locate() {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    startLocate();
+                }
+            });
+        }
+
         @JavascriptInterface
         public void printPage() {
             runOnUiThread(new Runnable() {
@@ -388,6 +404,93 @@ public class MainActivity extends Activity {
         web.evaluateJavascript(
                 "window.onSyncFileChosen && window.onSyncFileChosen("
                         + JSONObject.quote(name) + ");", null);
+    }
+
+    /* ---- geo-tagging ---- */
+
+    private void startLocate() {
+        if (Build.VERSION.SDK_INT >= 23
+                && checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                   != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                new String[]{ android.Manifest.permission.ACCESS_FINE_LOCATION }, REQ_LOCATION);
+            return;
+        }
+        readLocation();
+    }
+
+    private void sendLocation(Location loc, String error) {
+        String js;
+        if (loc != null) {
+            js = "window.__onLocation && window.__onLocation("
+               + loc.getLatitude() + "," + loc.getLongitude() + ","
+               + loc.getAccuracy() + ",null);";
+        } else {
+            js = "window.__onLocation && window.__onLocation(0,0,0,"
+               + JSONObject.quote(error) + ");";
+        }
+        web.evaluateJavascript(js, null);
+    }
+
+    private void readLocation() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (lm == null) {
+            sendLocation(null, "This device cannot report its location.");
+            return;
+        }
+        try {
+            // A single fix, then stop -- the app has no reason to keep listening.
+            final LocationListener[] holder = new LocationListener[1];
+            holder[0] = new LocationListener() {
+                public void onLocationChanged(Location loc) {
+                    try { lmSafeRemove(holder[0]); } catch (Exception ignored) { }
+                    sendLocation(loc, null);
+                }
+                public void onStatusChanged(String p, int st, Bundle ex) { }
+                public void onProviderEnabled(String p) { }
+                public void onProviderDisabled(String p) { }
+            };
+
+            String provider = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    ? LocationManager.GPS_PROVIDER
+                    : (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                        ? LocationManager.NETWORK_PROVIDER : null);
+            if (provider == null) {
+                sendLocation(null, "Location is switched off on this device.");
+                return;
+            }
+
+            // Offer the last known fix straight away so a tag is never blocked
+            // by a slow satellite lock; a better reading replaces it if it comes.
+            Location last = lm.getLastKnownLocation(provider);
+            if (last != null) sendLocation(last, null);
+
+            lm.requestLocationUpdates(provider, 0, 0, holder[0]);
+        } catch (SecurityException e) {
+            sendLocation(null, "Permission to use the location was refused.");
+        } catch (Exception e) {
+            sendLocation(null, "The location could not be read.");
+        }
+    }
+
+    private void lmSafeRemove(LocationListener l) {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (lm != null && l != null) {
+            try { lm.removeUpdates(l); } catch (Exception ignored) { }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int code, String[] perms, int[] results) {
+        if (code == REQ_LOCATION) {
+            if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
+                readLocation();
+            } else {
+                sendLocation(null, "Permission to use the location was refused.");
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(code, perms, results);
     }
 
     private void doPrint() {

@@ -37,9 +37,11 @@ directly:
    then go back and tap **Install** again.
 4. "Evacuee Register" appears in the app drawer.
 
-**What the app asks for: nothing.** It requests no permissions at all — no
-contacts, no location, no storage, and no internet. Backups are written through
-Android's own file picker, which is why no storage permission is needed.
+**What the app asks for: location, and only location.** It is requested the
+first time *Capture Location* is pressed, not at install, and is used solely to
+geo-tag a property. There is no internet permission, no storage permission and
+no contacts access — backups and sync both go through Android's own file picker,
+and the register never uses the network itself.
 
 Minimum Android 5.0. Tested to install on Android 14 and 15.
 
@@ -88,6 +90,42 @@ Needs a Debian/Ubuntu machine with `android-sdk-platform-23`,
 
 Only village, tehsil and nature of property are compulsory. Everything else can
 be filled in later as records come to hand.
+
+## Geo-tagging
+
+Every evacuee property is required to be geo-tagged. Open a property, press
+**Capture Location** while standing at it, and the coordinates and accuracy are
+stored on the record. The register marks it **Tagged**, and
+*Reports → Geo-tagging progress* lists what is still outstanding, by tehsil.
+Coordinates can also be typed in by hand.
+
+## The property file — rent ledger and inspections
+
+Each row has a **File** button opening that property's file:
+
+- **Rent demanded** — each demand as it is raised, with the period it covers
+- **Receipts issued** — every payment with receipt number, date and mode
+- **Inspections** — date, officer, condition of the property, and findings
+
+Arrears are then computed — opening balance, plus everything demanded, less
+everything received — so the figure traces back to entries rather than being
+typed from memory. Any arrears figure recorded before this became the opening
+balance, so nothing was lost.
+
+Ledger entries are merged on their own ids during sync, so a receipt taken at
+the office counter and one entered in the field both survive; neither overwrites
+the other.
+
+## Reports
+
+| Report | Use |
+| --- | --- |
+| Register of properties | The full register, with totals |
+| Rent defaulters | Everyone in arrears, largest first, with contact details — for a recovery drive |
+| Geo-tagging progress | Tagged versus pending, and a list of what is left |
+| Weekly progress return | The week's receipts, collections, inspections and tagging, alongside the standing position |
+
+All four print with the office heading and signature lines, or save as PDF.
 
 ## Cloud sync
 
