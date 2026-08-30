@@ -89,16 +89,62 @@ Needs a Debian/Ubuntu machine with `android-sdk-platform-23`,
 Only village, tehsil and nature of property are compulsory. Everything else can
 be filled in later as records come to hand.
 
+## Cloud sync
+
+Two devices — the office computer and the phone — can be kept showing the same
+register, without any server, account, subscription or API key.
+
+Sync works through **one JSON file** kept in whatever cloud folder the office
+already uses: Google Drive, OneDrive, Dropbox, a shared network folder, even a
+pen drive. Each device reads that file, merges it with its own records, and
+writes the result back. The cloud app that owns the folder does all the
+networking, which is why the Android app still requests **no INTERNET
+permission**.
+
+**Setting it up.** On the first device: *Backup & Data → Cloud Sync → Create
+Sync File*, saved inside the cloud folder. On every other device: *Use Existing
+Sync File*, and pick that same file. After that it syncs a few seconds after any
+change, and whenever the register is opened.
+
+**How conflicts are settled**
+
+| Situation | Result |
+| --- | --- |
+| Different properties added on each device | Both are kept |
+| Same property edited on both | The more recent edit wins |
+| Property deleted on one device | Deleted on the other too — it does not come back |
+| Both devices give a new property the same ID | One is renumbered automatically; both devices agree on the outcome |
+| Sync file caught mid-upload / unreadable | Sync is refused and reported; local records are untouched |
+
+The sync file has the same format as a backup file, so either can stand in for
+the other.
+
+Requires Chrome or Edge on the computer, or the Android app. Other browsers fall
+back to manual Backup and Restore, which work everywhere.
+
+## Deleted records
+
+Deleting a property moves it to **Deleted Records** under Backup & Data, where it
+can be restored. That is also what carries the deletion to the other device, so a
+deleted property does not reappear at the next sync. *Remove Permanently* clears
+them for good — but a copy still held on another device can then return.
+
 ## Where the data is kept — please read
 
-Records are stored **inside the browser on that one computer**. Nothing is sent
-anywhere, which keeps the data private, but it also means:
+Records are stored **on the device itself** — in the browser's storage on a
+computer, and inside the app's private storage on Android
+(`/data/data/com.baramulla.evacueeregister/…`, readable by no other app). Roughly
+9,500 properties fit before the storage limit is reached.
 
-- Clearing the browser's data will erase the register.
-- The records do not appear on any other computer by themselves.
+Nothing is sent anywhere except the sync file, if sync is switched on. But it
+also means:
+
+- Clearing the browser's or the app's data erases the register.
+- Uninstalling the Android app erases its copy.
 
 **So take a backup at the end of each working day:** open **Backup & Data** →
 **Download Backup File**, and keep the file on a pen drive or a separate folder.
+Sync is not a backup — a record deleted on one device is deleted on the other.
 
 To move the register to another computer, copy `evacuee-property-register.html`
 and the backup file across, open the HTML file there, and use

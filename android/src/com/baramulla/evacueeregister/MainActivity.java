@@ -5,8 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -20,6 +23,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -42,6 +49,11 @@ public class MainActivity extends Activity {
 
     private static final int REQ_PICK_FILE = 1001;
     private static final int REQ_SAVE_FILE = 1002;
+    private static final int REQ_SYNC_OPEN = 1003;
+    private static final int REQ_SYNC_CREATE = 1004;
+
+    private static final String PREFS = "evacuee_register";
+    private static final String KEY_SYNC_URI = "sync_uri";
 
     private WebView web;
     private ValueCallback<Uri[]> fileCallback;
@@ -199,6 +211,115 @@ public class MainActivity extends Activity {
             });
         }
 
+        /* ---- cloud sync ----
+           The sync file is an ordinary document the clerk picks with Android's
+           own file picker, so it can live in Google Drive, OneDrive, Dropbox, on
+           an SD card or on a USB stick — whatever the office already uses. Taking
+           a persistable permission lets the app reopen it on later runs. No
+           account, API key or INTERNET permission is involved: the cloud app that
+           owns the folder does the networking. */
+
+        @JavascriptInterface
+        public String syncFileName() {
+            Uri uri = syncUri();
+            return uri == null ? "" : displayName(uri);
+        }
+
+        @JavascriptInterface
+        public void chooseSyncFile() {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Intent open = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    open.addCategory(Intent.CATEGORY_OPENABLE);
+                    open.setType("*/*");
+                    open.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                            | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                    try {
+                        startActivityForResult(open, REQ_SYNC_OPEN);
+                    } catch (Exception e) {
+                        toast("No file manager is available on this device.");
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void createSyncFile(String suggested) {
+            final String name = (suggested == null || suggested.length() == 0)
+                    ? "evacuee-register-sync.json" : suggested;
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Intent make = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    make.addCategory(Intent.CATEGORY_OPENABLE);
+                    make.setType("application/json");
+                    make.putExtra(Intent.EXTRA_TITLE, name);
+                    make.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                            | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                    try {
+                        startActivityForResult(make, REQ_SYNC_CREATE);
+                    } catch (Exception e) {
+                        toast("No file manager is available on this device.");
+                    }
+                }
+            });
+        }
+
+        /** Returns the sync file's text, "" for a new or empty file, null on failure. */
+        @JavascriptInterface
+        public String readSync() {
+            Uri uri = syncUri();
+            if (uri == null) return null;
+            InputStream in = null;
+            try {
+                in = getContentResolver().openInputStream(uri);
+                if (in == null) return null;
+                ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                byte[] chunk = new byte[8192];
+                int read;
+                while ((read = in.read(chunk)) != -1) buf.write(chunk, 0, read);
+                return new String(buf.toByteArray(), "UTF-8");
+            } catch (Exception e) {
+                return null;
+            } finally {
+                if (in != null) { try { in.close(); } catch (Exception ignored) { } }
+            }
+        }
+
+        @JavascriptInterface
+        public boolean writeSync(String text) {
+            Uri uri = syncUri();
+            if (uri == null || text == null) return false;
+            OutputStream out = null;
+            try {
+                // "wt" truncates first; without it a shorter register would leave
+                // the tail of the previous, longer file behind and corrupt it.
+                out = getContentResolver().openOutputStream(uri, "wt");
+                if (out == null) return false;
+                out.write(text.getBytes("UTF-8"));
+                out.flush();
+                return true;
+            } catch (Exception e) {
+                return false;
+            } finally {
+                if (out != null) { try { out.close(); } catch (Exception ignored) { } }
+            }
+        }
+
+        @JavascriptInterface
+        public void forgetSync() {
+            Uri uri = syncUri();
+            if (uri != null) {
+                try {
+                    getContentResolver().releasePersistableUriPermission(uri,
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION
+                          | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                } catch (Exception ignored) { }
+            }
+            prefs().edit().remove(KEY_SYNC_URI).commit();
+        }
+
         @JavascriptInterface
         public void printPage() {
             runOnUiThread(new Runnable() {
@@ -217,6 +338,56 @@ public class MainActivity extends Activity {
                 }
             });
         }
+    }
+
+    private SharedPreferences prefs() {
+        return getSharedPreferences(PREFS, MODE_PRIVATE);
+    }
+
+    private Uri syncUri() {
+        String stored = prefs().getString(KEY_SYNC_URI, "");
+        if (stored.length() == 0) return null;
+        try {
+            return Uri.parse(stored);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private String displayName(Uri uri) {
+        Cursor c = null;
+        try {
+            c = getContentResolver().query(uri, null, null, null, null);
+            if (c != null && c.moveToFirst()) {
+                int col = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (col >= 0) {
+                    String name = c.getString(col);
+                    if (name != null && name.length() > 0) return name;
+                }
+            }
+        } catch (Exception ignored) {
+        } finally {
+            if (c != null) { try { c.close(); } catch (Exception ignored) { } }
+        }
+        return "sync file";
+    }
+
+    /** Keeps access to the chosen sync file across restarts. */
+    private void rememberSyncFile(Intent data) {
+        Uri uri = data.getData();
+        int granted = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                       | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        try {
+            getContentResolver().takePersistableUriPermission(uri, granted);
+        } catch (Exception ignored) {
+            // Some providers refuse a persistable grant; it still works this run.
+        }
+        prefs().edit().putString(KEY_SYNC_URI, uri.toString()).commit();
+
+        final String name = displayName(uri);
+        web.evaluateJavascript(
+                "window.onSyncFileChosen && window.onSyncFileChosen("
+                        + JSONObject.quote(name) + ");", null);
     }
 
     private void doPrint() {
@@ -248,6 +419,13 @@ public class MainActivity extends Activity {
             if (fileCallback != null) {
                 fileCallback.onReceiveValue(picked);
                 fileCallback = null;
+            }
+            return;
+        }
+
+        if (request == REQ_SYNC_OPEN || request == REQ_SYNC_CREATE) {
+            if (result == RESULT_OK && data != null && data.getData() != null) {
+                rememberSyncFile(data);
             }
             return;
         }

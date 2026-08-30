@@ -373,12 +373,47 @@
   <!-- ================= DATA ================= -->
   <section id="tab-data" class="panel">
     <div class="card">
+      <h2>Cloud Sync</h2>
+      <p class="sub">Keep the office computer and the phone showing the same register.</p>
+      <div class="note" id="syncNote">
+        Sync works through <strong>one file</strong> kept in the office's own cloud folder
+        &mdash; Google Drive, OneDrive, Dropbox, or even a pen drive or shared network folder.
+        Each device reads that file, merges it with its own records, and writes the result back.
+        Nothing is sent to any other company's server, and no account or password is needed here.
+      </div>
+      <p id="syncStatus" style="font-weight:600"></p>
+      <div class="btn-row" id="syncButtons"></div>
+      <p class="hint" id="syncHint" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card" id="deletedCard" style="display:none">
+      <h2>Deleted Records</h2>
+      <p class="sub">Deleted properties are kept here so they can be brought back, and so the
+        deletion reaches the other device on the next sync.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Property ID</th><th>Village / Tehsil</th><th>Occupant</th>
+            <th>Deleted on</th><th class="no-print">Action</th>
+          </tr></thead>
+          <tbody id="deletedBody"></tbody>
+        </table>
+      </div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn danger" id="btnPurge">Remove Permanently</button>
+      </div>
+      <p class="hint">Removing permanently frees the space but drops the record of the deletion,
+        so a copy still held on another device could come back on the next sync.</p>
+    </div>
+
+    <div class="card">
       <h2>Backup &amp; Restore</h2>
       <p class="sub">Records are saved inside this computer's browser. Take a backup regularly and keep the file safe.</p>
       <div class="note">
-        <strong>Important:</strong> This register stores data on this computer only. If the browser data is cleared,
-        or the computer is changed, records will be lost unless a backup file has been saved.
-        Take a backup at the end of each working day.
+        <strong>Important:</strong> Records are kept on this device. If its data is cleared, or the
+        device is changed, they are lost unless a backup file has been saved &mdash; so take a backup
+        at the end of each working day. Cloud Sync above keeps two devices in step, but it is not a
+        substitute for a backup: a record deleted on one device is deleted on the other too.
       </div>
       <div class="section-title">Backup</div>
       <div class="btn-row">
@@ -437,6 +472,25 @@
       <p>Go to <strong>Reports</strong>, choose the tehsil and status you need, press <strong>Generate Report</strong>,
       then <strong>Print / Save as PDF</strong>. The printed page carries the office heading and signature lines,
       and totals are shown at the bottom of the table.</p>
+
+      <div class="section-title">Using it on two devices</div>
+      <p>Go to <strong>Backup &amp; Data &rarr; Cloud Sync</strong>. On the first device press
+      <strong>Create Sync File</strong> and save it inside the office's cloud folder &mdash; the
+      Google Drive, OneDrive or Dropbox folder already in use, or a folder on a shared drive.
+      On every other device press <strong>Use Existing Sync File</strong> and pick that same file.
+      From then on both devices show the same register: each one merges the file with its own
+      records a few seconds after any change, and again whenever it is opened.</p>
+      <p>Entries made on two devices at the same time are all kept &mdash; nothing is thrown away.
+      If a property is edited in both places, the more recent edit is the one kept. If both
+      devices happen to give a new property the same number, one of them is renumbered
+      automatically so no two properties share an ID.</p>
+      <p>No account or password is needed here, and nothing is sent to any company running this
+      register. Whichever cloud folder is chosen does the carrying.</p>
+
+      <div class="section-title">Deleted records</div>
+      <p>Deleting a property does not destroy it. It moves to <strong>Deleted Records</strong>
+      under Backup &amp; Data, where it can be restored. Keeping it there is also what tells the
+      other device that the property was deleted, so it does not reappear at the next sync.</p>
 
       <div class="section-title">Keeping records safe</div>
       <p>The register works without internet and keeps its data on this computer. Go to
@@ -627,10 +681,37 @@
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
   }
+  function matchesSel(el, sel){
+    var f = el.matches || el.webkitMatchesSelector || el.msMatchesSelector;
+    return f ? f.call(el, sel) : false;
+  }
+  // Stands in for Element.closest(), which older WebViews lack.
+  function up(el, sel){
+    while (el && el.nodeType === 1) {
+      if (matchesSel(el, sel)) return el;
+      el = el.parentNode;
+    }
+    return null;
+  }
+  function each(list, fn){
+    for (var i = 0; i < list.length; i++) fn(list[i], i);
+  }
   function num(v){ var n = parseFloat(v); return isFinite(n) ? n : 0; }
   function money(n){
-    n = num(n);
-    return n.toLocaleString("en-IN", {maximumFractionDigits:0});
+    n = Math.round(num(n));
+    var neg = n < 0, s = String(Math.abs(n));
+    if (s.length > 3) {
+      var last3 = s.slice(-3), rest = s.slice(0, -3);
+      s = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + last3;
+    }
+    return (neg ? "-" : "") + s;
+  }
+  // Records the register shows. Tombstones stay in the array but out of sight.
+  function live(){
+    return records.filter(function(r){ return !r.deleted; });
+  }
+  function deletedRows(){
+    return records.filter(function(r){ return !!r.deleted; });
   }
   function statusClass(name){
     for (var i=0;i<STATUSES.length;i++) if (STATUSES[i].name === name) return STATUSES[i].cls;
@@ -665,12 +746,13 @@
   }
 
   /* ---------------- Persistence ---------------- */
-  function save(){
+  function save(fromSync){
     try {
       localStorage.setItem(STORE, JSON.stringify(records));
     } catch (e) {
-      toast("Could not save. Please take a backup immediately.", true);
+      toast("Could not save \u2014 the register may be full. Take a backup immediately.", true);
     }
+    if (!fromSync) scheduleSync();
   }
   function load(){
     try {
@@ -702,7 +784,7 @@
   function knownTehsils(){
     var set = {}, out = [];
     TEHSILS.forEach(function(t){ set[t] = 1; });
-    records.forEach(function(r){ if (r.tehsil) set[r.tehsil] = 1; });
+    live().forEach(function(r){ if (r.tehsil) set[r.tehsil] = 1; });
     for (var k in set) if (set.hasOwnProperty(k)) out.push(k);
     return out.sort();
   }
@@ -731,7 +813,7 @@
   function filtered(){
     var q = $("fSearch").value.trim().toLowerCase();
     var t = $("fTehsil").value, s = $("fStatus").value, n = $("fNature").value;
-    var out = records.filter(function(r){
+    var out = live().filter(function(r){
       if (t && r.tehsil !== t) return false;
       if (s && r.status !== s) return false;
       if (n && r.nature !== n) return false;
@@ -759,14 +841,14 @@
 
   /* ---------------- Register table ---------------- */
   function renderRegister(){
-    var rows = filtered(), body = $("regBody");
+    var rows = filtered(), body = $("regBody"), total = live().length;
     $("countLine").textContent =
-      "Showing " + rows.length + " of " + records.length + " propert" +
-      (records.length === 1 ? "y" : "ies") + ".";
-    $("regEmpty").style.display = records.length === 0 ? "block" : "none";
-    document.querySelector("#regTable").style.display = records.length === 0 ? "none" : "";
+      "Showing " + rows.length + " of " + total + " propert" +
+      (total === 1 ? "y" : "ies") + ".";
+    $("regEmpty").style.display = total === 0 ? "block" : "none";
+    document.querySelector("#regTable").style.display = total === 0 ? "none" : "";
 
-    if (records.length && !rows.length) {
+    if (total && !rows.length) {
       body.innerHTML = '<tr><td colspan="11" class="empty">' +
         "No property matches the current search or filters.</td></tr>";
       return;
@@ -793,7 +875,8 @@
   /* ---------------- Dashboard ---------------- */
   function renderDashboard(){
     var totalRent = 0, totalArrears = 0, marla = 0, counts = {}, tehsils = {};
-    records.forEach(function(r){
+    var shown = live();
+    shown.forEach(function(r){
       totalRent += num(r.rent);
       totalArrears += num(r.arrears);
       marla += totalMarla(r);
@@ -803,7 +886,7 @@
     var kanal = Math.floor(marla / 20), rem = marla % 20;
 
     $("statCards").innerHTML = [
-      card("Total Properties", records.length, ""),
+      card("Total Properties", shown.length, ""),
       card("Allotted / Leased", (counts["Allotted"]||0) + (counts["Under Lease"]||0), "ok"),
       card("Vacant", counts["Vacant"] || 0, "info"),
       card("Under Litigation", counts["Under Litigation"] || 0, "warn"),
@@ -814,17 +897,17 @@
     ].join("");
 
     $("dashUpdated").textContent =
-      records.length ? "Overview of all properties recorded in this register. As on " + today() + "."
-                     : "No properties recorded yet. Open the Property Register to add the first entry.";
+      shown.length ? "Overview of all properties recorded in this register. As on " + today() + "."
+                   : "No properties recorded yet. Open the Property Register to add the first entry.";
 
-    $("byStatus").innerHTML = bars(STATUSES.map(function(s){ return s.name; }), counts, records.length)
+    $("byStatus").innerHTML = bars(STATUSES.map(function(s){ return s.name; }), counts, shown.length)
       || '<p class="hint">No records yet.</p>';
 
     var tKeys = Object.keys(tehsils).sort(function(a,b){ return tehsils[b] - tehsils[a]; });
-    $("byTehsil").innerHTML = bars(tKeys, tehsils, records.length)
+    $("byTehsil").innerHTML = bars(tKeys, tehsils, shown.length)
       || '<p class="hint">No records yet.</p>';
 
-    var attention = records.filter(function(r){
+    var attention = shown.filter(function(r){
       return num(r.arrears) > 0 || r.status === "Under Litigation" || r.status === "Encroached";
     }).sort(function(a,b){ return num(b.arrears) - num(a.arrears); });
 
@@ -915,7 +998,7 @@
   /* ---------------- Reports ---------------- */
   function buildReport(){
     var t = $("rTehsil").value, s = $("rStatus").value;
-    reportRows = sortRows(records.filter(function(r){
+    reportRows = sortRows(live().filter(function(r){
       if (t && r.tehsil !== t) return false;
       if (s && r.status !== s) return false;
       return true;
@@ -1002,14 +1085,15 @@
     return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v;
   }
   function exportCsv(){
-    if (!records.length) { toast("There are no records to export.", true); return; }
+    var shown = live();
+    if (!shown.length) { toast("There are no records to export.", true); return; }
     var lines = [CSV_COLS.map(function(c){ return csvCell(c[1]); }).join(",")];
-    sortRows(records).forEach(function(r){
+    sortRows(shown).forEach(function(r){
       lines.push(CSV_COLS.map(function(c){ return csvCell(r[c[0]]); }).join(","));
     });
     download("evacuee-property-register-" + stamp() + ".csv",
              "﻿" + lines.join("\r\n"), "text/csv;charset=utf-8");
-    toast("Exported " + records.length + " records to CSV.");
+    toast("Exported " + shown.length + " records to CSV.");
   }
   function backup(){
     var payload = {
@@ -1069,12 +1153,16 @@
     r.status = r.status || "Vacant";
     r.createdAt = raw.createdAt || new Date().toISOString();
     r.updatedAt = raw.updatedAt || r.createdAt;
+    if (raw.deleted) {
+      r.deleted = true;
+      r.deletedAt = raw.deletedAt || r.updatedAt;
+    }
     return r;
   }
 
   /* ---------------- Sample data ---------------- */
   function demo(){
-    if (records.length && !confirm("This will add 6 sample records for practice. Continue?")) return;
+    if (live().length && !confirm("This will add 6 sample records for practice. Continue?")) return;
     var samples = [
       {khasra:"412/3",khata:"87",fileNo:"DC/BLA/EP/2019/044",village:"Sheeri",tehsil:"Boniyar",
        niabat:"Sheeri",nature:"Agricultural Land",kanal:6,marla:12,origOwner:"Ghulam Nabi Shah",
@@ -1117,6 +1205,327 @@
     showTab("register");
   }
 
+  /* ---------------- Cloud sync ----------------
+     One JSON file, held wherever the office already keeps shared files. Each
+     device merges that file with its own copy and writes the result back, so
+     there is no server to run, no account to create and no subscription. The
+     sync file has exactly the same shape as a backup file, so either can stand
+     in for the other. */
+  var SYNC_META = "dc_baramulla_sync_meta_v1";
+  var fileHandle = null;          // desktop File System Access handle
+  var syncMeta = { name: "", lastSync: "" };
+  var syncTimer = null, syncing = false;
+
+  function onAndroid(){
+    return !!(window.AndroidBridge && typeof window.AndroidBridge.readSync === "function");
+  }
+  function onDesktop(){ return typeof window.showOpenFilePicker === "function"; }
+  function syncPossible(){ return onAndroid() || onDesktop(); }
+  function syncReady(){ return onAndroid() ? !!syncMeta.name : !!fileHandle; }
+
+  function loadSyncMeta(){
+    try {
+      var raw = localStorage.getItem(SYNC_META);
+      if (raw) syncMeta = JSON.parse(raw);
+    } catch (e) { syncMeta = { name: "", lastSync: "" }; }
+    if (!syncMeta || typeof syncMeta !== "object") syncMeta = { name: "", lastSync: "" };
+  }
+  function saveSyncMeta(){
+    try { localStorage.setItem(SYNC_META, JSON.stringify(syncMeta)); } catch (e) { }
+  }
+
+  /* -- desktop: remember the chosen file across sessions -- */
+  function withIdb(cb){
+    try {
+      var req = indexedDB.open("dc_baramulla_sync", 1);
+      req.onupgradeneeded = function(){ req.result.createObjectStore("h"); };
+      req.onsuccess = function(){ cb(req.result); };
+      req.onerror = function(){ cb(null); };
+    } catch (e) { cb(null); }
+  }
+  function rememberHandle(h){
+    withIdb(function(db){
+      if (!db) return;
+      try { db.transaction("h", "readwrite").objectStore("h").put(h, "file"); } catch (e) { }
+    });
+  }
+  function recallHandle(cb){
+    withIdb(function(db){
+      if (!db) return cb(null);
+      try {
+        var r = db.transaction("h", "readonly").objectStore("h").get("file");
+        r.onsuccess = function(){ cb(r.result || null); };
+        r.onerror = function(){ cb(null); };
+      } catch (e) { cb(null); }
+    });
+  }
+  // Chrome re-asks for permission on a stored handle after a restart.
+  function ensurePermission(cb){
+    if (!fileHandle || !fileHandle.queryPermission) return cb(true);
+    fileHandle.queryPermission({ mode: "readwrite" }).then(function(state){
+      if (state === "granted") return cb(true);
+      return fileHandle.requestPermission({ mode: "readwrite" }).then(function(s){
+        cb(s === "granted");
+      });
+    }).catch(function(){ cb(false); });
+  }
+
+  /* -- read / write the sync file, whichever platform we are on -- */
+  function readRemote(cb){
+    if (onAndroid()) {
+      var text;
+      try { text = window.AndroidBridge.readSync(); }
+      catch (e) { return cb(null, "The sync file could not be opened."); }
+      return cb(text == null ? "" : text, null);
+    }
+    if (!fileHandle) return cb(null, "No sync file has been chosen yet.");
+    fileHandle.getFile()
+      .then(function(f){ return f.text(); })
+      .then(function(t){ cb(t, null); })
+      .catch(function(){ cb(null, "The sync file could not be opened."); });
+  }
+  function writeRemote(text, cb){
+    if (onAndroid()) {
+      var ok = false;
+      try { ok = window.AndroidBridge.writeSync(text); } catch (e) { ok = false; }
+      return cb(!!ok, ok ? null : "The sync file could not be written to.");
+    }
+    if (!fileHandle) return cb(false, "No sync file has been chosen yet.");
+    fileHandle.createWritable()
+      .then(function(w){
+        return w.write(text).then(function(){ return w.close(); });
+      })
+      .then(function(){ cb(true, null); })
+      .catch(function(){ cb(false, "The sync file could not be written to."); });
+  }
+
+  /* -- the merge itself --
+     Records are matched on their permanent id. Whichever copy was edited last
+     wins. Tombstones take part like any other record, so a property deleted on
+     one device does not come back from the other. */
+  function mergeRecords(mine, theirs){
+    var byId = {}, stats = { added: 0, updated: 0, kept: 0 };
+    mine.forEach(function(r){ byId[r.id] = r; });
+    theirs.forEach(function(raw){
+      var r;
+      try { r = normalise(raw); } catch (e) { return; }
+      var have = byId[r.id];
+      if (!have) { byId[r.id] = r; stats.added++; return; }
+      if (String(r.updatedAt || "") > String(have.updatedAt || "")) {
+        byId[r.id] = r; stats.updated++;
+      } else {
+        stats.kept++;
+      }
+    });
+    var out = [];
+    for (var k in byId) if (byId.hasOwnProperty(k)) out.push(byId[k]);
+    return { records: out, stats: stats };
+  }
+
+  /* Two devices adding a property while apart both reach for the same next
+     number. Both survive the merge on their ids, so the later one is renumbered
+     — by creation time, so each device arrives at the same answer. */
+  function dedupePids(rows){
+    var taken = {}, renumbered = 0;
+    var order = rows.slice().sort(function(a, b){
+      var x = String(a.createdAt || "") + a.id, y = String(b.createdAt || "") + b.id;
+      return x < y ? -1 : (x > y ? 1 : 0);
+    });
+    var highest = 0;
+    order.forEach(function(r){
+      var m = /(\d+)\s*$/.exec(r.pid || "");
+      if (m) { var v = parseInt(m[1], 10); if (v > highest) highest = v; }
+    });
+    order.forEach(function(r){
+      if (r.deleted) return;
+      if (taken[r.pid]) {
+        highest++;
+        var digits = String(highest);
+        while (digits.length < 4) digits = "0" + digits;
+        r.pid = "EP/BLA/" + digits;
+        r.updatedAt = new Date().toISOString();
+        renumbered++;
+      }
+      taken[r.pid] = 1;
+    });
+    return renumbered;
+  }
+
+  function syncPayload(){
+    return JSON.stringify({
+      app: "Evacuee Property Register",
+      office: "Deputy Custodian, Baramulla",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      count: live().length,
+      records: records
+    }, null, 2);
+  }
+
+  function doSync(quiet){
+    if (syncing) return;
+    if (!syncReady()) { if (!quiet) toast("Choose a sync file first.", true); return; }
+    syncing = true;
+    $("syncStatus").textContent = "Syncing\u2026";
+
+    var run = function(allowed){
+      if (!allowed) {
+        syncing = false; renderSync();
+        if (!quiet) toast("Permission to use the sync file was refused.", true);
+        return;
+      }
+      readRemote(function(text, err){
+        if (err) {
+          syncing = false; renderSync();
+          if (!quiet) toast(err, true);
+          return;
+        }
+        var theirs = [];
+        if (text && text.replace(/\s/g, "")) {
+          try {
+            var data = JSON.parse(text);
+            theirs = Array.isArray(data) ? data
+                   : (data && Array.isArray(data.records) ? data.records : []);
+          } catch (e) {
+            syncing = false; renderSync();
+            if (!quiet) toast("The sync file is not readable. It may be mid-upload \u2014 try again.", true);
+            return;
+          }
+        }
+        var result = mergeRecords(records, theirs);
+        var renumbered = dedupePids(result.records);
+        records = result.records;
+        save(true);
+        refreshTehsilOptions();
+        renderAll();
+
+        writeRemote(syncPayload(), function(ok, werr){
+          syncing = false;
+          if (ok) {
+            syncMeta.lastSync = new Date().toISOString();
+            saveSyncMeta();
+          }
+          renderSync();
+          if (quiet) return;
+          if (!ok) { toast(werr, true); return; }
+          var bits = [];
+          if (result.stats.added) bits.push(result.stats.added + " brought in");
+          if (result.stats.updated) bits.push(result.stats.updated + " updated");
+          if (renumbered) bits.push(renumbered + " renumbered");
+          toast(bits.length ? "Synced \u2014 " + bits.join(", ") + "." : "Synced. Already up to date.");
+        });
+      });
+    };
+
+    if (onAndroid()) run(true); else ensurePermission(run);
+  }
+
+  function scheduleSync(){
+    if (!syncReady() || syncing) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function(){ doSync(true); }, 8000);
+  }
+
+  function chooseSyncFile(existing){
+    if (onAndroid()) {
+      try {
+        if (existing) window.AndroidBridge.chooseSyncFile();
+        else window.AndroidBridge.createSyncFile("evacuee-register-sync.json");
+      } catch (e) { toast("The file picker could not be opened.", true); }
+      return;
+    }
+    var opts = {
+      types: [{ description: "Register sync file", accept: { "application/json": [".json"] } }]
+    };
+    var picked;
+    if (existing) {
+      opts.multiple = false;
+      picked = window.showOpenFilePicker(opts).then(function(hs){ return hs[0]; });
+    } else {
+      opts.suggestedName = "evacuee-register-sync.json";
+      picked = window.showSaveFilePicker(opts);
+    }
+    picked.then(function(h){
+      fileHandle = h;
+      rememberHandle(h);
+      syncMeta.name = h.name;
+      saveSyncMeta();
+      renderSync();
+      doSync(false);
+    }).catch(function(){ /* the clerk cancelled the picker */ });
+  }
+
+  function stopSync(){
+    if (!confirm("Stop syncing?\n\nRecords already on this device stay exactly as they are.")) return;
+    fileHandle = null;
+    syncMeta = { name: "", lastSync: "" };
+    saveSyncMeta();
+    rememberHandle(null);
+    if (onAndroid()) { try { window.AndroidBridge.forgetSync(); } catch (e) { } }
+    renderSync();
+    toast("Syncing stopped.");
+  }
+
+  // Android calls this once the clerk has picked a file in the system picker.
+  window.onSyncFileChosen = function(name){
+    syncMeta.name = name || "sync file";
+    saveSyncMeta();
+    renderSync();
+    doSync(false);
+  };
+
+  function renderSync(){
+    var status = $("syncStatus"), buttons = $("syncButtons"), hint = $("syncHint");
+    if (!syncPossible()) {
+      status.textContent = "Not available in this browser.";
+      buttons.innerHTML = "";
+      hint.textContent = "This browser cannot hold on to a sync file. Chrome or Edge on the "
+        + "office computer can, and so can the Android app. Backup and Restore below work "
+        + "everywhere in the meantime.";
+      return;
+    }
+    if (!syncReady()) {
+      status.textContent = "Not set up yet.";
+      buttons.innerHTML =
+        '<button class="btn" id="btnSyncNew">Create Sync File</button>'
+      + '<button class="btn ghost" id="btnSyncOpen">Use Existing Sync File</button>';
+      hint.textContent = "On the first device choose Create Sync File and save it inside the "
+        + "cloud folder. On every other device choose Use Existing Sync File and pick that same file.";
+    } else {
+      var when = syncMeta.lastSync ? new Date(syncMeta.lastSync) : null;
+      status.textContent = "Syncing with " + syncMeta.name
+        + (when ? " \u2014 last synced " + when.toLocaleString() : " \u2014 not synced yet");
+      buttons.innerHTML =
+        '<button class="btn" id="btnSyncNow">Sync Now</button>'
+      + '<button class="btn ghost" id="btnSyncStop">Stop Syncing</button>';
+      hint.textContent = "The register also syncs by itself a few seconds after any change, and "
+        + "when it is opened.";
+    }
+    var b;
+    if ((b = $("btnSyncNew"))) b.onclick = function(){ chooseSyncFile(false); };
+    if ((b = $("btnSyncOpen"))) b.onclick = function(){ chooseSyncFile(true); };
+    if ((b = $("btnSyncNow"))) b.onclick = function(){ doSync(false); };
+    if ((b = $("btnSyncStop"))) b.onclick = stopSync;
+  }
+
+  /* ---------------- Deleted records ---------------- */
+  function renderDeleted(){
+    var gone = deletedRows();
+    $("deletedCard").style.display = gone.length ? "block" : "none";
+    if (!gone.length) return;
+    gone.sort(function(a, b){ return String(b.deletedAt) < String(a.deletedAt) ? -1 : 1; });
+    $("deletedBody").innerHTML = gone.map(function(r){
+      return "<tr>" +
+        '<td class="pid">' + esc(r.pid) + "</td>" +
+        "<td>" + esc(r.village) + " / " + esc(r.tehsil) + "</td>" +
+        "<td>" + esc(r.occupant || "\u2014") + "</td>" +
+        "<td>" + esc(dateText(String(r.deletedAt || "").slice(0, 10))) + "</td>" +
+        '<td class="no-print"><button class="btn ghost small" data-restore="'
+          + esc(r.id) + '">Restore</button></td>' +
+        "</tr>";
+    }).join("");
+  }
+
   /* ---------------- Tabs ---------------- */
   function showTab(name){
     var btns = document.querySelectorAll("nav.tabs button");
@@ -1126,12 +1535,12 @@
     window.scrollTo(0,0);
   }
 
-  function renderAll(){ renderDashboard(); renderRegister(); }
+  function renderAll(){ renderDashboard(); renderRegister(); renderSync(); renderDeleted(); }
 
   /* ---------------- Events ---------------- */
   function wire(){
     document.querySelector("nav.tabs").addEventListener("click", function(e){
-      var b = e.target.closest("button[data-tab]");
+      var b = up(e.target, "button[data-tab]");
       if (b) showTab(b.dataset.tab);
     });
 
@@ -1140,17 +1549,17 @@
       $(id).addEventListener("change", renderRegister);
     });
 
-    document.querySelectorAll("#regTable thead th.sortable").forEach(function(th){
+    each(document.querySelectorAll("#regTable thead th.sortable"), function(th){
       th.addEventListener("click", function(){
-        var k = th.dataset.sort;
+        var k = th.getAttribute("data-sort");
         if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = 1; }
         renderRegister();
       });
     });
 
     $("regBody").addEventListener("click", function(e){
-      var ed = e.target.closest("button[data-edit]");
-      var dl = e.target.closest("button[data-del]");
+      var ed = up(e.target, "button[data-edit]");
+      var dl = up(e.target, "button[data-del]");
       if (ed) {
         for (var i=0;i<records.length;i++) if (records[i].id === ed.dataset.edit) { openModal(records[i]); return; }
       }
@@ -1158,9 +1567,12 @@
         for (var j=0;j<records.length;j++) if (records[j].id === dl.dataset.del) {
           var r = records[j];
           if (confirm("Delete property " + r.pid + " (" + r.village + ", " + r.tehsil + ")?\n\n" +
-                      "This cannot be undone.")) {
-            records.splice(j,1); save(); renderAll();
-            toast("Property " + r.pid + " deleted.");
+                      "It moves to Deleted Records, under Backup & Data, and can be restored "
+                      + "from there.")) {
+            r.deleted = true;
+            r.deletedAt = r.updatedAt = new Date().toISOString();
+            save(); refreshTehsilOptions(); renderAll();
+            toast("Property " + r.pid + " moved to Deleted Records.");
           }
           return;
         }
@@ -1194,13 +1606,44 @@
     $("btnBackup").addEventListener("click", backup);
     $("btnRestore").addEventListener("click", restore);
     $("btnDemo").addEventListener("click", demo);
+
+    $("deletedBody").addEventListener("click", function(e){
+      var rs = up(e.target, "button[data-restore]");
+      if (!rs) return;
+      for (var i = 0; i < records.length; i++) {
+        if (records[i].id === rs.getAttribute("data-restore")) {
+          var r = records[i];
+          delete r.deleted;
+          delete r.deletedAt;
+          r.updatedAt = new Date().toISOString();
+          save(); refreshTehsilOptions(); renderAll();
+          toast("Property " + r.pid + " restored to the register.");
+          return;
+        }
+      }
+    });
+
+    $("btnPurge").addEventListener("click", function(){
+      var gone = deletedRows();
+      if (!gone.length) return;
+      if (!confirm("Permanently remove " + gone.length + " deleted record(s)?\n\n"
+                 + "They can no longer be restored, and a copy still held on another "
+                 + "device could return on the next sync.")) return;
+      records = live();
+      save(); renderAll();
+      toast(gone.length + " record(s) removed permanently.");
+    });
     $("btnClear").addEventListener("click", function(){
-      if (!records.length) { toast("The register is already empty.", true); return; }
-      if (!confirm("Delete ALL " + records.length + " record(s) from this register?\n\n" +
-                   "This cannot be undone. Take a backup first.")) return;
-      if (!confirm("Please confirm once more: permanently delete every record?")) return;
-      records = []; save(); refreshTehsilOptions(); renderAll();
-      toast("All records deleted.");
+      var shown = live();
+      if (!shown.length) { toast("The register is already empty.", true); return; }
+      if (!confirm("Delete ALL " + shown.length + " record(s) from this register?\n\n" +
+                   "They move to Deleted Records and can be restored from there. "
+                   + "Take a backup first.")) return;
+      if (!confirm("Please confirm once more: delete every record?")) return;
+      var when = new Date().toISOString();
+      shown.forEach(function(r){ r.deleted = true; r.deletedAt = r.updatedAt = when; });
+      save(); refreshTehsilOptions(); renderAll();
+      toast(shown.length + " record(s) moved to Deleted Records.");
     });
 
     window.addEventListener("beforeprint", function(){
@@ -1211,9 +1654,27 @@
 
   /* ---------------- Start ---------------- */
   load();
+  loadSyncMeta();
   initSelects();
   wire();
   renderAll();
+
+  // Reconnect to the sync file chosen last time, then sync in the background.
+  if (onAndroid()) {
+    var known = "";
+    try { known = window.AndroidBridge.syncFileName() || ""; } catch (e) { known = ""; }
+    syncMeta.name = known;
+    saveSyncMeta();
+    renderSync();
+    if (known) setTimeout(function(){ doSync(true); }, 800);
+  } else if (onDesktop()) {
+    recallHandle(function(h){
+      if (!h) return;
+      fileHandle = h;
+      renderSync();
+      setTimeout(function(){ doSync(true); }, 800);
+    });
+  }
 })();
 </script>
 </body>
