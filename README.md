@@ -4,15 +4,68 @@ An offline record-keeping application for maintaining the register of evacuee
 properties: property particulars, allotment and occupancy, rent and arrears,
 litigation status, and printable office reports.
 
-The whole application is one file: **`evacuee-property-register.html`**
+The register itself is one self-contained file,
+**`evacuee-property-register.html`**, which also ships as an Android app.
 
-## How to run it
+## Three ways to run it
 
-Double-click `evacuee-property-register.html`. It opens in any browser
-(Chrome, Edge, Firefox).
+**1. On the office computer.** Double-click `evacuee-property-register.html`.
+It opens in any browser (Chrome, Edge, Firefox). Nothing to install, no
+internet, no login.
 
-There is nothing to install, no internet connection needed, and no login.
-Everything works on the office computer as it is.
+**2. As an Android app.** Install `android/dist/Evacuee-Register.apk` on a
+phone or tablet — see *Installing the Android app* below.
+
+**3. From a web link.** If GitHub Pages is enabled for this repository, the
+register is served at the project's Pages URL. Records still stay on whichever
+device opens it; nothing is stored on the website.
+
+All three run the same register. The app and the website are built from the
+same `evacuee-property-register.html`, so there is only ever one version to
+maintain.
+
+## Installing the Android app
+
+The APK is not on the Play Store, so the phone must be allowed to install it
+directly:
+
+1. Copy `Evacuee-Register.apk` to the phone (cable, email to himself, or a
+   pen drive).
+2. Open it with the phone's Files app and tap **Install**.
+3. Android will warn that the app is from an unknown source — choose
+   **Settings**, allow installation from that app (usually Files or Chrome),
+   then go back and tap **Install** again.
+4. "Evacuee Register" appears in the app drawer.
+
+**What the app asks for: nothing.** It requests no permissions at all — no
+contacts, no location, no storage, and no internet. Backups are written through
+Android's own file picker, which is why no storage permission is needed.
+
+Minimum Android 5.0. Tested to install on Android 14 and 15.
+
+### Inside the app
+
+- **Backup** opens Android's "save file" screen, so the clerk chooses where the
+  backup goes — phone storage, an SD card, or Google Drive if he uses it.
+- **Restore** opens the file picker to choose a backup file.
+- **Print / Save as PDF** uses Android's print service. Choosing "Save as PDF"
+  produces the same register report as the desktop version.
+- **Back** closes an open property form first, so a half-typed entry is never
+  lost by accident; pressing it again asks before closing the app.
+
+### Rebuilding the app
+
+    ./android/build.sh
+
+Needs a Debian/Ubuntu machine with `android-sdk-platform-23`,
+`android-sdk-build-tools`, `apksigner`, a JDK and `dx` (see the header of
+`build.sh` for exact packages). The script refreshes the bundled register from
+`evacuee-property-register.html`, so edit that one file and rebuild.
+
+> **Keep the signing key.** The first build creates `android/evacuee-register.jks`.
+> It is deliberately not committed. If it is lost, a rebuilt app can still be
+> installed, but only after uninstalling the old one first — which would erase
+> the records on that device unless a backup was taken. Store it somewhere safe.
 
 ## What it does
 

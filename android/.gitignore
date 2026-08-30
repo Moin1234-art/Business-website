@@ -1,0 +1,14 @@
+# Copied from ../evacuee-property-register.html by build.sh — the register
+# has one source of truth, so this copy is not tracked.
+assets/index.html
+
+build/
+dist/*
+# ...but ship the signed APK so it can be downloaded from the repository.
+!dist/Evacuee-Register.apk
+
+# App signing key. Never commit this: anyone holding it can sign an APK that
+# installs as an update over the office's copy. Keep the file backed up
+# somewhere safe instead — updates must be signed with the same key, or they
+# cannot install over an existing installation.
+*.jks
